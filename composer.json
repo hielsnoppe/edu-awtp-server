@@ -1,0 +1,22 @@
+{
+    "name": "hielsnoppe/edu-awtp-server",
+    "require": {
+        "sabre/dav": "^3.2",
+        "semsol/arc2": "^2.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niels Hoppe",
+            "email": "mail@nielshoppe.de"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "NielsHoppe\\AWTP\\Server\\" : "lib/"
+        }
+    }
+}

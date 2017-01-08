@@ -4,8 +4,55 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f7cc0831f595ef1982537e6c1a9ed7a9",
+    "hash": "a072573bf3772e0546c8ad592e60819c",
     "packages": [
+        {
+            "name": "benestar/asparagus",
+            "version": "0.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Benestar/asparagus.git",
+                "reference": "6299517dc28ace1e5934a0b09a2ac6d8a2910032"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Benestar/asparagus/zipball/6299517dc28ace1e5934a0b09a2ac6d8a2910032",
+                "reference": "6299517dc28ace1e5934a0b09a2ac6d8a2910032",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.4.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Asparagus\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU GPL v2+"
+            ],
+            "authors": [
+                {
+                    "name": "Bene*",
+                    "email": "benestar.wikimedia@gmail.com"
+                }
+            ],
+            "description": "SPARQL abstraction layer for PHP",
+            "homepage": "https://github.com/benestar/Asparagus",
+            "keywords": [
+                "Abstraction Layer",
+                "asparagus",
+                "sparql"
+            ],
+            "time": "2016-01-21 17:22:45"
+        },
         {
             "name": "psr/log",
             "version": "1.0.2",

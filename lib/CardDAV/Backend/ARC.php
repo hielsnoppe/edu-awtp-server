@@ -2,7 +2,13 @@
 
 namespace NielsHoppe\AWTP\Server\CardDAV\Backend;
 
+use Asparagus\QueryBuilder;
+use NielsHoppe\AWTP\Server\Constants;
+use NielsHoppe\AWTP\Server\ARCStoreManager;
 use Sabre\CardDAV;
+use Sabre\CardDAV\Backend\PDO;
+use Sabre\CardDAV\Backend\SyncSupport;
+use Sabre\CardDAV\Backend\AbstractBackend;
 use Sabre\DAV;
 
 /**
@@ -14,41 +20,68 @@ use Sabre\DAV;
  * @author Niels Hoppe (http://nielshoppe.de/)
  * @license http://sabre.io/license/ Modified BSD License
  */
-class ARC extends AbstractBackend implements SyncSupport {
+class ARC extends PDO implements SyncSupport {
 
     /**
      * PDO connection
      *
-     * @var PDO
+     * @var \PDO
      */
     protected $pdo;
 
     /**
-     * The PDO table name used to store addressbooks
-     */
-    public $addressBooksTableName = 'addressbooks';
-
-    /**
-     * The PDO table name used to store cards
-     */
-    public $cardsTableName = 'cards';
-
-    /**
-     * The table name that will be used for tracking changes in address books.
+     * ARC configuration
      *
-     * @var string
+     * @var mixed[]
      */
-    public $addressBookChangesTableName = 'addressbookchanges';
+    protected $config;
+
+    /**
+     * The PDO table name used to store ARC2 stores for addressbooks
+     */
+    public $addressBooksStoresTableName = 'addressbooks_arcstores';
+
+    /**
+     * @var mixed[]
+     */
+    public static $queryPrefixes = array(
+        "rdf" => Constants::NS_RDF,
+        "vcard" => Constants::NS_VCARD
+    );
 
     /**
      * Sets up the object
      *
      * @param \PDO $pdo
+     * @param array $config Configuration for ARC2
      */
-    function __construct(\PDO $pdo) {
+    function __construct($pdo, array $config) {
 
-        $this->pdo = $pdo;
+        parent::__construct($pdo);
 
+        $this->config = $config;
+    }
+
+    private function getStoreForAddressBook($addressbookId) {
+
+        $stmt = $this->pdo->prepare("SELECT storename FROM " .
+                $this->addressBooksStoresTableName . " WHERE addressbookid = ?");
+        $stmt->execute([$addressbookId]);
+
+        $stmt->bindColumn("storename", $storeName);
+        $stmt->fetch(\PDO::FETCH_BOUND);
+
+        $config = array(
+            "db_host" => $this->config["db_host"],
+            "db_name" => $this->config["db_name"],
+            "db_user" => $this->config["db_user"],
+            "db_pwd" => $this->config["db_pwd"],
+            "store_name" => $storeName
+        );
+
+        $store = \ARC2::getStore($config);
+
+        return $store;
     }
 
     /**
@@ -59,27 +92,7 @@ class ARC extends AbstractBackend implements SyncSupport {
      */
     function getAddressBooksForUser($principalUri) {
 
-        $stmt = $this->pdo->prepare('SELECT id, uri, displayname, principaluri, description, synctoken FROM ' . $this->addressBooksTableName . ' WHERE principaluri = ?');
-        $stmt->execute([$principalUri]);
-
-        $addressBooks = [];
-
-        foreach ($stmt->fetchAll() as $row) {
-
-            $addressBooks[] = [
-                'id'                                                          => $row['id'],
-                'uri'                                                         => $row['uri'],
-                'principaluri'                                                => $row['principaluri'],
-                '{DAV:}displayname'                                           => $row['displayname'],
-                '{' . CardDAV\Plugin::NS_CARDDAV . '}addressbook-description' => $row['description'],
-                '{http://calendarserver.org/ns/}getctag'                      => $row['synctoken'],
-                '{http://sabredav.org/ns}sync-token'                          => $row['synctoken'] ? $row['synctoken'] : '0',
-            ];
-
-        }
-
-        return $addressBooks;
-
+        return parent::getAddressBooksForUser($principalUri);
     }
 
 
@@ -101,48 +114,7 @@ class ARC extends AbstractBackend implements SyncSupport {
      */
     function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch) {
 
-        $supportedProperties = [
-            '{DAV:}displayname',
-            '{' . CardDAV\Plugin::NS_CARDDAV . '}addressbook-description',
-        ];
-
-        $propPatch->handle($supportedProperties, function($mutations) use ($addressBookId) {
-
-            $updates = [];
-            foreach ($mutations as $property => $newValue) {
-
-                switch ($property) {
-                    case '{DAV:}displayname' :
-                        $updates['displayname'] = $newValue;
-                        break;
-                    case '{' . CardDAV\Plugin::NS_CARDDAV . '}addressbook-description' :
-                        $updates['description'] = $newValue;
-                        break;
-                }
-            }
-            $query = 'UPDATE ' . $this->addressBooksTableName . ' SET ';
-            $first = true;
-            foreach ($updates as $key => $value) {
-                if ($first) {
-                    $first = false;
-                } else {
-                    $query .= ', ';
-                }
-                $query .= ' ' . $key . ' = :' . $key . ' ';
-            }
-            $query .= ' WHERE id = :addressbookid';
-
-            $stmt = $this->pdo->prepare($query);
-            $updates['addressbookid'] = $addressBookId;
-
-            $stmt->execute($updates);
-
-            $this->addChange($addressBookId, "", 2);
-
-            return true;
-
-        });
-
+        return parent::updateAddressBook($addressBookId, $propPatch);
     }
 
     /**
@@ -155,35 +127,7 @@ class ARC extends AbstractBackend implements SyncSupport {
      */
     function createAddressBook($principalUri, $url, array $properties) {
 
-        $values = [
-            'displayname'  => null,
-            'description'  => null,
-            'principaluri' => $principalUri,
-            'uri'          => $url,
-        ];
-
-        foreach ($properties as $property => $newValue) {
-
-            switch ($property) {
-                case '{DAV:}displayname' :
-                    $values['displayname'] = $newValue;
-                    break;
-                case '{' . CardDAV\Plugin::NS_CARDDAV . '}addressbook-description' :
-                    $values['description'] = $newValue;
-                    break;
-                default :
-                    throw new DAV\Exception\BadRequest('Unknown property: ' . $property);
-            }
-
-        }
-
-        $query = 'INSERT INTO ' . $this->addressBooksTableName . ' (uri, displayname, description, principaluri, synctoken) VALUES (:uri, :displayname, :description, :principaluri, 1)';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($values);
-        return $this->pdo->lastInsertId(
-            $this->addressBooksTableName . '_id_seq'
-        );
-
+        return parent::createAddressBook($principalUri, $url, $properties);
     }
 
     /**
@@ -194,15 +138,9 @@ class ARC extends AbstractBackend implements SyncSupport {
      */
     function deleteAddressBook($addressBookId) {
 
-        $stmt = $this->pdo->prepare('DELETE FROM ' . $this->cardsTableName . ' WHERE addressbookid = ?');
-        $stmt->execute([$addressBookId]);
+        // TODO Remove orphaned cards from store
 
-        $stmt = $this->pdo->prepare('DELETE FROM ' . $this->addressBooksTableName . ' WHERE id = ?');
-        $stmt->execute([$addressBookId]);
-
-        $stmt = $this->pdo->prepare('DELETE FROM ' . $this->addressBookChangesTableName . ' WHERE addressbookid = ?');
-        $stmt->execute([$addressBookId]);
-
+        parent::deleteAddressBook($addressBookId);
     }
 
     /**
@@ -236,7 +174,6 @@ class ARC extends AbstractBackend implements SyncSupport {
             $result[] = $row;
         }
         return $result;
-
     }
 
     /**
@@ -252,6 +189,13 @@ class ARC extends AbstractBackend implements SyncSupport {
      * @return array
      */
     function getCard($addressBookId, $cardUri) {
+
+        $store = $this->getStoreForAddressbook($addressbookId);
+
+        return new QueryBuilder(self::$queryPrefixes);
+        $query->select("?fn")
+            ->where("?card", "vcard:fn", "?fn")
+            ->where("?card", "rdf:about", $cardUri);
 
         $stmt = $this->pdo->prepare('SELECT id, carddata, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ? LIMIT 1');
         $stmt->execute([$addressBookId, $cardUri]);

@@ -3,8 +3,9 @@
 namespace NielsHoppe\AWTP\Server\CardDAV\Backend;
 
 use Asparagus\QueryBuilder;
+use NielsHoppe\AWTP\Server\CardDAV\VCardBuilder;
 use NielsHoppe\AWTP\Server\Constants;
-use NielsHoppe\AWTP\Server\ARCStoreManager;
+use NielsHoppe\AWTP\Server\MappingQueryBuilder;
 use Sabre\CardDAV;
 use Sabre\CardDAV\Backend\PDO;
 use Sabre\CardDAV\Backend\SyncSupport;
@@ -23,13 +24,6 @@ use Sabre\DAV;
 class ARC extends PDO implements SyncSupport {
 
     /**
-     * PDO connection
-     *
-     * @var \PDO
-     */
-    protected $pdo;
-
-    /**
      * ARC configuration
      *
      * @var mixed[]
@@ -46,8 +40,36 @@ class ARC extends PDO implements SyncSupport {
      */
     public static $queryPrefixes = array(
         "rdf" => Constants::NS_RDF,
-        "vcard" => Constants::NS_VCARD
+        "rdfs" => Constants::NS_RDFS,
+
+        "vcard" => Constants::NS_VCARD,
+        "foaf" => Constants::NS_FOAF,
+        "bio" => Constants::NS_BIO,
+
+        "app" => Constants::NS_APP
     );
+
+    public static $mappings = [
+        "vcard" => [
+            "vcard" => [
+                "fn" => "fn",
+                "given-name" => "given-name",
+                "family-name" => "family-name",
+                "nick" => "nick",
+                "hasEmail" => "hasEmail"
+            ]
+        ],
+        "foaf" => [
+            "vcard" => [
+                "name" => "fn",
+                "givenname" => "given-name",
+                "family_name" => "family-name",
+                "nick" => "nickname",
+                "homepage" => "hasURL",
+                "phone" => "hasTelephone"
+            ]
+        ]
+    ];
 
     /**
      * Sets up the object
@@ -64,12 +86,24 @@ class ARC extends PDO implements SyncSupport {
 
     private function getStoreForAddressBook($addressbookId) {
 
+        /*
         $stmt = $this->pdo->prepare("SELECT storename FROM " .
-                $this->addressBooksStoresTableName . " WHERE addressbookid = ?");
+                $this->addressBooksStoresTableName .
+                " WHERE addressbookid = ?");
         $stmt->execute([$addressbookId]);
 
-        $stmt->bindColumn("storename", $storeName);
-        $stmt->fetch(\PDO::FETCH_BOUND);
+        if ($stmt->rowCount()) {
+
+            $stmt->bindColumn("storename", $storeName);
+            $stmt->fetch(\PDO::FETCH_BOUND);
+        }
+        else {
+
+            // TODO Create entry in table
+        }
+        */
+        $storeName = "addressbook_" . strval($addressbookId);
+        $storeName = "test"; // XXX Override for testing
 
         $config = array(
             "db_host" => $this->config["db_host"],
@@ -90,10 +124,12 @@ class ARC extends PDO implements SyncSupport {
      * @param string $principalUri
      * @return array
      */
+     /*
     function getAddressBooksForUser($principalUri) {
 
         return parent::getAddressBooksForUser($principalUri);
     }
+    */
 
 
     /**
@@ -108,14 +144,18 @@ class ARC extends PDO implements SyncSupport {
      *
      * Read the PropPatch documenation for more info and examples.
      *
-     * @param string $addressBookId
+     * @param string $addressbookId
      * @param \Sabre\DAV\PropPatch $propPatch
      * @return void
      */
-    function updateAddressBook($addressBookId, \Sabre\DAV\PropPatch $propPatch) {
+     /*
+    function updateAddressBook($addressbookId, \Sabre\DAV\PropPatch $propPatch) {
 
-        return parent::updateAddressBook($addressBookId, $propPatch);
+        return parent::updateAddressBook($addressbookId, $propPatch);
     }
+    */
+
+    // BEGIN
 
     /**
      * Creates a new address book
@@ -127,20 +167,26 @@ class ARC extends PDO implements SyncSupport {
      */
     function createAddressBook($principalUri, $url, array $properties) {
 
-        return parent::createAddressBook($principalUri, $url, $properties);
+        $addressbookId = parent::createAddressBook($principalUri, $url, $properties);
+        $store = $this->getStoreForAddressBook($addressbookId);
+
+        if (!$store->isSetUp()) $store->setUp();
+
+        return $addressbookId;
     }
 
     /**
      * Deletes an entire addressbook and all its contents
      *
-     * @param int $addressBookId
+     * @param int $addressbookId
      * @return void
      */
-    function deleteAddressBook($addressBookId) {
+    function deleteAddressBook($addressbookId) {
 
-        // TODO Remove orphaned cards from store
+        $store = $this->getStoreForAddressBook($addressbookId);
+        $store->drop();
 
-        parent::deleteAddressBook($addressBookId);
+        parent::deleteAddressBook($addressbookId);
     }
 
     /**
@@ -164,6 +210,27 @@ class ARC extends PDO implements SyncSupport {
      */
     function getCards($addressbookId) {
 
+        $store = $this->getStoreForAddressBook($addressbookId);
+        $builder = new MappingQueryBuilder(self::$mappings);
+
+        $rs = $store->query($builder->getQuery("foaf:Person", "vcard:VCard"));
+        $result = [];
+
+        foreach ($rs["result"] as $uri => $data) {
+
+            $builder = new VCardBuilder();
+            $builder->readFromRDF($data);
+            $newUri = md5($uri);
+            $store->query("INSERT DATA { $uri owl:sameAs $newUri . }");
+
+            // id, uri, lastmodified, etag, size, carddata
+            $result[] = [
+                "uri" => md5($uri),
+                "carddata" => $builder->getCard()->serialize()
+            ];
+        }
+
+        /*
         $stmt = $this->pdo->prepare('SELECT id, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ?');
         $stmt->execute([$addressbookId]);
 
@@ -173,6 +240,7 @@ class ARC extends PDO implements SyncSupport {
             $row['lastmodified'] = (int)$row['lastmodified'];
             $result[] = $row;
         }
+        */
         return $result;
     }
 
@@ -184,21 +252,45 @@ class ARC extends PDO implements SyncSupport {
      *
      * If the card does not exist, you must return false.
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param string $cardUri
      * @return array
      */
-    function getCard($addressBookId, $cardUri) {
+    function getCard($addressbookId, $cardUri) {
 
         $store = $this->getStoreForAddressbook($addressbookId);
+        $builder = new MappingQueryBuilder(self::$mappings);
 
-        return new QueryBuilder(self::$queryPrefixes);
+        $rs = $store->query($builder->getQuery("foaf:Person", "vcard:VCard"));
+        $result = [];
+
+        foreach ($rs["result"] as $uri => $data) {
+
+            $builder = new VCardBuilder();
+            $builder->readFromRDF($data);
+
+            // id, uri, lastmodified, etag, size, carddata
+            $result[] = [
+                "uri" => md5($uri),
+                "carddata" => $builder->getCard()->serialize()
+            ];
+        }
+
+        $query = new QueryBuilder(self::$queryPrefixes);
         $query->select("?fn")
             ->where("?card", "vcard:fn", "?fn")
             ->where("?card", "rdf:about", $cardUri);
 
+        $rs = $store->query($query->format());
+        $err = $store->getErrors();
+
+        if (!$err) {
+
+            $rows = $rs["result"]["rows"];
+        }
+
         $stmt = $this->pdo->prepare('SELECT id, carddata, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ? LIMIT 1');
-        $stmt->execute([$addressBookId, $cardUri]);
+        $stmt->execute([$addressbookId, $cardUri]);
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
@@ -218,11 +310,11 @@ class ARC extends PDO implements SyncSupport {
      *
      * If the backend supports this, it may allow for some speed-ups.
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param array $uris
      * @return array
      */
-    function getMultipleCards($addressBookId, array $uris) {
+    function getMultipleCards($addressbookId, array $uris) {
 
         $query = 'SELECT id, uri, lastmodified, etag, size, carddata FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri IN (';
         // Inserting a whole bunch of question marks
@@ -230,7 +322,7 @@ class ARC extends PDO implements SyncSupport {
         $query .= ')';
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute(array_merge([$addressBookId], $uris));
+        $stmt->execute(array_merge([$addressbookId], $uris));
         $result = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $row['etag'] = '"' . $row['etag'] . '"';
@@ -261,12 +353,12 @@ class ARC extends PDO implements SyncSupport {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param string $cardUri
      * @param string $cardData
      * @return string|null
      */
-    function createCard($addressBookId, $cardUri, $cardData) {
+    function createCard($addressbookId, $cardUri, $cardData) {
 
         $stmt = $this->pdo->prepare('INSERT INTO ' . $this->cardsTableName . ' (carddata, uri, lastmodified, addressbookid, size, etag) VALUES (?, ?, ?, ?, ?, ?)');
 
@@ -276,12 +368,12 @@ class ARC extends PDO implements SyncSupport {
             $cardData,
             $cardUri,
             time(),
-            $addressBookId,
+            $addressbookId,
             strlen($cardData),
             $etag,
         ]);
 
-        $this->addChange($addressBookId, $cardUri, 1);
+        $this->addChange($addressbookId, $cardUri, 1);
 
         return '"' . $etag . '"';
 
@@ -307,12 +399,12 @@ class ARC extends PDO implements SyncSupport {
      *
      * If you don't return an ETag, you can just return null.
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param string $cardUri
      * @param string $cardData
      * @return string|null
      */
-    function updateCard($addressBookId, $cardUri, $cardData) {
+    function updateCard($addressbookId, $cardUri, $cardData) {
 
         $stmt = $this->pdo->prepare('UPDATE ' . $this->cardsTableName . ' SET carddata = ?, lastmodified = ?, size = ?, etag = ? WHERE uri = ? AND addressbookid =?');
 
@@ -323,10 +415,10 @@ class ARC extends PDO implements SyncSupport {
             strlen($cardData),
             $etag,
             $cardUri,
-            $addressBookId
+            $addressbookId
         ]);
 
-        $this->addChange($addressBookId, $cardUri, 2);
+        $this->addChange($addressbookId, $cardUri, 2);
 
         return '"' . $etag . '"';
 
@@ -335,20 +427,22 @@ class ARC extends PDO implements SyncSupport {
     /**
      * Deletes a card
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param string $cardUri
      * @return bool
      */
-    function deleteCard($addressBookId, $cardUri) {
+    function deleteCard($addressbookId, $cardUri) {
 
         $stmt = $this->pdo->prepare('DELETE FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ?');
-        $stmt->execute([$addressBookId, $cardUri]);
+        $stmt->execute([$addressbookId, $cardUri]);
 
-        $this->addChange($addressBookId, $cardUri, 3);
+        $this->addChange($addressbookId, $cardUri, 3);
 
         return $stmt->rowCount() === 1;
 
     }
+
+    // END
 
     /**
      * The getChanges method returns all the changes that have happened, since
@@ -400,17 +494,18 @@ class ARC extends PDO implements SyncSupport {
      *
      * The limit is 'suggestive'. You are free to ignore it.
      *
-     * @param string $addressBookId
+     * @param string $addressbookId
      * @param string $syncToken
      * @param int $syncLevel
      * @param int $limit
      * @return array
      */
-    function getChangesForAddressBook($addressBookId, $syncToken, $syncLevel, $limit = null) {
+     /*
+    function getChangesForAddressBook($addressbookId, $syncToken, $syncLevel, $limit = null) {
 
         // Current synctoken
         $stmt = $this->pdo->prepare('SELECT synctoken FROM ' . $this->addressBooksTableName . ' WHERE id = ?');
-        $stmt->execute([ $addressBookId ]);
+        $stmt->execute([ $addressbookId ]);
         $currentToken = $stmt->fetchColumn(0);
 
         if (is_null($currentToken)) return null;
@@ -429,7 +524,7 @@ class ARC extends PDO implements SyncSupport {
 
             // Fetching all changes
             $stmt = $this->pdo->prepare($query);
-            $stmt->execute([$syncToken, $currentToken, $addressBookId]);
+            $stmt->execute([$syncToken, $currentToken, $addressbookId]);
 
             $changes = [];
 
@@ -460,35 +555,38 @@ class ARC extends PDO implements SyncSupport {
             // No synctoken supplied, this is the initial sync.
             $query = "SELECT uri FROM " . $this->cardsTableName . " WHERE addressbookid = ?";
             $stmt = $this->pdo->prepare($query);
-            $stmt->execute([$addressBookId]);
+            $stmt->execute([$addressbookId]);
 
             $result['added'] = $stmt->fetchAll(\PDO::FETCH_COLUMN);
         }
         return $result;
 
     }
+    */
 
     /**
      * Adds a change record to the addressbookchanges table.
      *
-     * @param mixed $addressBookId
+     * @param mixed $addressbookId
      * @param string $objectUri
      * @param int $operation 1 = add, 2 = modify, 3 = delete
      * @return void
      */
-    protected function addChange($addressBookId, $objectUri, $operation) {
+     /*
+    protected function addChange($addressbookId, $objectUri, $operation) {
 
         $stmt = $this->pdo->prepare('INSERT INTO ' . $this->addressBookChangesTableName . ' (uri, synctoken, addressbookid, operation) SELECT ?, synctoken, ?, ? FROM ' . $this->addressBooksTableName . ' WHERE id = ?');
         $stmt->execute([
             $objectUri,
-            $addressBookId,
+            $addressbookId,
             $operation,
-            $addressBookId
+            $addressbookId
         ]);
         $stmt = $this->pdo->prepare('UPDATE ' . $this->addressBooksTableName . ' SET synctoken = synctoken + 1 WHERE id = ?');
         $stmt->execute([
-            $addressBookId
+            $addressbookId
         ]);
 
     }
+    */
 }

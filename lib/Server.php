@@ -4,16 +4,12 @@ namespace NielsHoppe\AWTP\Server;
 
 use Sabre\DAV;
 
-function array_extract($array, $keys) {
-    return array_intersect_key($array, array_flip($keys));
-}
-
 class Server {
 
     /**
-     * @var array
+     * @var Config
      */
-    private $arcCconfig;
+    private $config;
     /**
      * @var \Sabre\DAV\Server
      */
@@ -21,13 +17,20 @@ class Server {
 
     public function __construct ($config) {
 
+        $this->config = Config::getInstance();
+        $this->config->setAll($config);
+
         $pdo = new \PDO(sprintf("mysql:host=%s;dbname=%s",
-            $config["db_host"], $config["db_name"]),
-            $config["db_user"], $config["db_pwd"]
+            $this->config->get("db_host"),
+            $this->config->get("db_name")),
+            $this->config->get("db_user"),
+            $this->config->get("db_pwd")
         );
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $arcConfig = array_extract($config, ["db_host", "db_name", "db_user", "db_pwd"]);
+        $arcConfig = $this->config->getAll([
+            "db_host", "db_name", "db_user", "db_pwd"
+        ]);
 
         // Backends
         $authBackend = new \Sabre\DAV\Auth\Backend\PDO($pdo);
@@ -48,10 +51,11 @@ class Server {
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $this->sabre->setBaseUri($config["base_uri"]);
+        $this->sabre->setBaseUri($this->config->get("sabre_base_uri"));
 
         // Authentication plugin
-        $this->sabre->addPlugin(new \Sabre\DAV\Auth\Plugin($authBackend, $config["auth_realm"]));
+        $this->sabre->addPlugin(new \Sabre\DAV\Auth\Plugin($authBackend,
+                $this->config->get("sabre_auth_realm")));
 
         // CalDAV plugin
         #$this->sabreServer->addPlugin(new CalDAV\Plugin());

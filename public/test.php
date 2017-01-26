@@ -15,7 +15,7 @@ $store = ARC2::getStore([
 ]);
 
 if (!$store->isSetUp()) $store->setUp();
-$store->reset();
+#$store->reset();
 $store->query("LOAD <file:///vagrant/data/addressbook.rdf>");
 
 $builder = new MappingQueryBuilder([
@@ -39,69 +39,83 @@ $builder = new MappingQueryBuilder([
             "homepage" => "hasURL",
             "phone" => "hasTelephone"
         ]
+    ],
+    "bio" => [
+        "bio" => [
+            "date" => "date"
+        ]
     ]
 ]);
 
 #$query = Constants::SPARQL_ALL_CLASSES;
-#$query = query("vcard:Individual", "vcard:VCard");
-$query = $builder->getQuery("foaf:Person", "vcard:VCard");
-$query = <<<SPARQL
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX vcard: <http://www.w3.org/2001/vcard-rdf/3.0#>
-PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-PREFIX bio: <http://purl.org/vocab/bio/0.1/>
-PREFIX app: <http://vocab.nielshoppe.de/edu-awtp-server/#>
+#$query = Constants::SPARQL_ALL_CARDS;
+#$query = Constants::SPARQL_ALL_EVENTS;
 
+function generateMissingInternalIDs ($store) {
 
-CONSTRUCT {
-?card rdf:type vcard:VCard ;
-vcard:fn ?a ;
-vcard:given-name ?d ;
-vcard:family-name ?e ;
-vcard:nickname ?f ;
-vcard:hasURL ?g ;
-vcard:hasTelephone ?h ;
-vcard:hasAddress ?i ;
-}
-WHERE {
-?card rdf:type foaf:Person .
-OPTIONAL { ?card foaf:name ?a } .
-OPTIONAL { ?card foaf:givenname ?b } .
-OPTIONAL { ?card foaf:family_name ?c } .
-OPTIONAL { ?card foaf:firstname ?d } .
-OPTIONAL { ?card foaf:lastname ?e } .
-OPTIONAL { ?card foaf:nick ?f } .
-OPTIONAL { ?card foaf:homepage ?g } .
-OPTIONAL { ?card foaf:phone ?h } .
-OPTIONAL { ?card vcard:hasAddress ?i } .
-}
-SPARQL;
+    $query = Constants::SPARQL_ALL_CARDS;
+    $query = Constants::SPARQL_ALL_EVENTS;
+    $rs = $store->query($query);
+    #var_dump($rs); return;
 
-$rs = $store->query($query);
+    $updateQuery = [
+        Constants::SPARQL_PREFIXES,
+        "INSERT INTO <http://ns.nielshoppe.de/people> {"
+    ];
 
-foreach ($rs["result"] as $uri => $data) {
-    echo("\n\n" . $uri . "\n\n");
-    var_dump($data);
-    /*
+    foreach ($rs['result']['rows'] as $row) {
+        $uri = $row['event'];
+        $id = "TODO";
+        array_push($updateQuery, sprintf("<%s> app:id \"%s\" .", $uri, $id));
+    }
 
-    $builder = new VCardBuilder();
-    $builder->readFromRDF($data);
-    $card = $builder->getCard();
+    array_push($updateQuery, '}');
+    $updateQuery = implode("\n", $updateQuery);
 
-    echo($card->serialize());
-    //*/
-    echo("\n");
+    echo($updateQuery); return;
+    $rs = $store->query($updateQuery);
 }
 
-echo($query);
+function getCards ($store, $builder) {
 
-/*
-{ ?res rdf:type vcard:VCard }
-UNION { ?res rdf:type vcard:Kind }
-UNION { ?res rdf:type vcard:Individual }
-UNION { ?res rdf:type vcard:Organization }
-UNION { ?res rdf:type vcard:Location }
-UNION { ?res rdf:type vcard:Group }
-UNION { ?res rdf:type foaf:Person }
-*/
+    $query = $builder->getQuery("foaf:Person", "vcard:VCard");
+    $rs = $store->query($query);
+
+    foreach ($rs["result"] as $uri => $data) {
+        echo("\n\n" . $uri . "\n\n");
+        var_dump($data);
+
+        /*
+        $builder = new VCardBuilder();
+        $builder->readFromRDF($data);
+        $card = $builder->getCard();
+        echo($card->serialize());
+        //*/
+
+        echo("\n");
+    }
+}
+
+function getEvents ($store, $builder) {
+
+    $query = $builder->getQuery("bio:Birth", "bio:Event");
+    $rs = $store->query($query);
+
+    foreach ($rs["result"] as $uri => $data) {
+        echo("\n\n" . $uri . "\n\n");
+        var_dump($data);
+        /*
+
+        $builder = new VCardBuilder();
+        $builder->readFromRDF($data);
+        $card = $builder->getCard();
+
+        echo($card->serialize());
+        //*/
+        echo("\n");
+    }
+}
+
+generateMissingInternalIDs($store);
+#getCards($store, $builder);
+#getEvents($store, $builder);

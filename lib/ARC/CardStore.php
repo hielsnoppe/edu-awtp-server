@@ -17,38 +17,77 @@ class CardStore {
      */
     private $store;
 
-    private static $prefixes = [
-        "rdf" => Constants::NS_RDF,
-        "rdfs" => Constants::NS_RDFS,
-
-        "vcard" => Constants::NS_VCARD,
-        "foaf" => Constants::NS_FOAF,
-        "bio" => Constants::NS_BIO,
-
-        "app" => Constants::NS_APP
-    ];
-
     public function __construct(ARC2_Store $store) {
 
         $this->store = $store;
     }
 
     public function getCards() {
-        //
-        $query = new QueryBuilder(self::$queryPrefixes);
-        $query->select("?fn")
-            ->where("?card", "vcard:fn", "?fn")
-            ->where("?card", "rdf:about", $cardUri);
-        $rows = $this->query($query);
     }
 
-    private function createInternalURIs () {
+    private function inferMissingTypes () {
 
-        $query = new QueryBuilder(self::$prefixes);
-        $query->select("")
-            ->where();
+        // ?s foaf:givenname ?o => ?s a foaf:Person
+        $query = Constants::SPARQL_PREFIXES . <<<SPARQL
 
-        $rs = $this->store->query($query);
+SELECT ?person WHERE {
+    ?person a ?type ; ?p []
+    FILTER (!bound(?type) && (
+        ?p = foaf:firstname ||
+        ?p = foaf:lastname ||
+        ?p = foaf:givenname ||
+        ?p = foaf:familyname
+    ))
+}
+SPARQL;
+        // Add X rdf:type foaf:Person
+        $rows = $this->query($query);
+
+        $updateQuery = [
+            Constants::SPARQL_PREFIXES,
+            "INSERT INTO <http://ns.nielshoppe.de/people> {"
+        ];
+
+        foreach ($rs['result']['rows'] as $row) {
+            $uri = $row['person'];
+            array_push($updateQuery, sprintf("<%s> rdf:type foaf:Person .", $uri));
+        }
+
+        array_push($updateQuery, '}');
+        $updateQuery = implode("\n", $updateQuery);
+
+        echo($updateQuery);
+    }
+
+    /**
+     *
+     */
+    private function generateMissingURIs () {
+
+        $query = Constants::SPARQL_ALL_VOBJECTS_WOID;
+        $rs = $store->query($query);
+
+        $updateQuery = [
+            Constants::SPARQL_PREFIXES,
+            "INSERT INTO <http://ns.nielshoppe.de/people> {"
+        ];
+
+        foreach ($rs['result']['rows'] as $row) {
+            $uri = $row['subject'];
+            $id = $this->generateURI();
+            array_push($updateQuery, sprintf("<%s> app:id \"%s\" .", $uri, $id));
+        }
+
+        array_push($updateQuery, '}');
+        $updateQuery = implode("\n", $updateQuery);
+
+        echo($updateQuery); return;
+        $rs = $store->query($updateQuery);
+    }
+
+    private function generateURI () {
+
+        return 'TODO';
     }
 
     private function query(QueryBuilder $query) {

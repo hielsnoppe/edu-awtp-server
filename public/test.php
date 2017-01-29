@@ -15,7 +15,7 @@ $store = ARC2::getStore([
 ]);
 
 if (!$store->isSetUp()) $store->setUp();
-#$store->reset();
+$store->reset();
 $store->query("LOAD <file:///vagrant/data/addressbook.rdf>");
 
 $builder = new MappingQueryBuilder([
@@ -47,16 +47,10 @@ $builder = new MappingQueryBuilder([
     ]
 ]);
 
-#$query = Constants::SPARQL_ALL_CLASSES;
-#$query = Constants::SPARQL_ALL_CARDS;
-#$query = Constants::SPARQL_ALL_EVENTS;
-
 function generateMissingInternalIDs ($store) {
 
-    $query = Constants::SPARQL_ALL_CARDS;
-    $query = Constants::SPARQL_ALL_EVENTS;
+    $query = Constants::SPARQL_ALL_VOBJECTS_WOID;
     $rs = $store->query($query);
-    #var_dump($rs); return;
 
     $updateQuery = [
         Constants::SPARQL_PREFIXES,
@@ -64,7 +58,7 @@ function generateMissingInternalIDs ($store) {
     ];
 
     foreach ($rs['result']['rows'] as $row) {
-        $uri = $row['event'];
+        $uri = $row['subject'];
         $id = "TODO";
         array_push($updateQuery, sprintf("<%s> app:id \"%s\" .", $uri, $id));
     }
@@ -119,3 +113,4 @@ function getEvents ($store, $builder) {
 generateMissingInternalIDs($store);
 #getCards($store, $builder);
 #getEvents($store, $builder);
+#echo($builder->getQuery("vcard:Individual", "vcard:VCard"));

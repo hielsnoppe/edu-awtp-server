@@ -19,6 +19,17 @@ class Constants {
 
     const NS_APP = "http://vocab.nielshoppe.de/edu-awtp-server#";
 
+    const PREFIXES = [
+        'rdf' => NS_RDF,
+        'rdfs' => NS_RDFS,
+        'owl' => NS_OWL,
+        'vcard' => NS_VCARD,
+        'vcal' => NS_VCAL,
+        'foaf' => NS_FOAF,
+        'bio' => NS_BIO,
+        'app' => NS_APP
+    ];
+
     /*
      * SPARQL queries
      */
@@ -64,14 +75,61 @@ FILTER (?type = bio:Birth || ?type = bio:Event)
 }
 SPARQL;
 
-/*
-{ ?res rdf:type vcard:VCard }
-UNION { ?res rdf:type vcard:Kind }
-UNION { ?res rdf:type vcard:Individual }
-UNION { ?res rdf:type vcard:Organization }
-UNION { ?res rdf:type vcard:Location }
-UNION { ?res rdf:type vcard:Group }
-UNION { ?res rdf:type foaf:Person }
-*/
+    const SPARQL_ALL_VOBJECTS_WOID = Constants::SPARQL_PREFIXES . <<<SPARQL
+
+SELECT ?subject ?type WHERE {
+    ?subject a ?type
+    OPTIONAL { ?subject app:id ?id }
+    FILTER (?type = foaf:Person || ?type = vcard:Individual || ?type = bio:Birth)
+    FILTER (!bound(?id))
+}
+SPARQL;
+
+    const SPARQL_ALL_CARDS_FULL = Constants::SPARQL_PREFIXES . <<<SPARQL
+
+CONSTRUCT {
+    ?card rdf:type vcard:VCard ;
+    app:originalType ?type ;
+    app:id ?id ;
+    vcard:fn ?foaf_fn ;
+    vcard:fn ?vcard_fn ;
+    vcard:given-name ?foaf_given ;
+    vcard:given-name ?foaf_given2 ;
+    vcard:given-name ?vcard_given ;
+    vcard:family-name ?foaf_family ;
+    vcard:family-name ?foaf_family2 ;
+    vcard:family-name ?vcard_family ;
+    vcard:nickname ?foaf_nick ;
+    vcard:nickname ?vcard_nick ;
+    vcard:hasURL ?foaf_url ;
+    vcard:hasURL ?vcard_url ;
+    vcard:hasTelephone ?foaf_tel ;
+    vcard:hasTelephone ?vcard_tel ;
+    vcard:hasEmail ?foaf_email ;
+    vcard:hasEmail ?vcard_email ;
+}
+WHERE {
+    ?card a ?type ; app:id ?id .
+    FILTER (?type = foaf:Person || ?type = vcard:Individual)
+
+    OPTIONAL { ?card foaf:name ?foaf_fn } .
+    OPTIONAL { ?card foaf:givenname ?foaf_given } .
+    OPTIONAL { ?card foaf:family_name ?foaf_family } .
+    OPTIONAL { ?card foaf:firstname ?foaf_given2 } .
+    OPTIONAL { ?card foaf:lastname ?foaf_family2 } .
+    OPTIONAL { ?card foaf:nick ?foaf_nick } .
+    OPTIONAL { ?card foaf:homepage ?foaf_url } .
+    OPTIONAL { ?card foaf:phone ?foaf_tel } .
+    OPTIONAL { ?card foaf:mbox ?foaf_email } .
+
+    OPTIONAL { ?card vcard:fn ?vcard_fn } .
+    OPTIONAL { ?card vcard:given-name ?vcard_given } .
+    OPTIONAL { ?card vcard:family-name ?vcard_family } .
+    OPTIONAL { ?card vcard:nickname ?vcard_nick } .
+    OPTIONAL { ?card vcard:hasURL ?vcard_url } .
+    OPTIONAL { ?card vcard:hasTelephone ?vcard_tel } .
+    OPTIONAL { ?card vcard:hasEmail ?vcard_email } .
+}
+SPARQL;
 
 }

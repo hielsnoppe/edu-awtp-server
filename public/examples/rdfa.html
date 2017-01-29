@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+    "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    version="XHTML+RDFa 1.0" xml:lang="en">
+  <head>
+    <title>Example - RDFa</title>
+    <!--
+    <base href="http://example.org/john-d/" />
+    -->
+    <meta property="dc:creator" content="Niels Hoppe" />
+    <link rel="foaf:primaryTopic" href="http://example.com/jdoe/#me" />
+  </head>
+  <body about="http://example.com/jdoe/#me">
+    <p>
+        <span property="foaf:firstname">John</span> <span property="foaf:lastname">Doe</span>
+    </p>
+    <dl>
+        <dt>Mail:</dt>
+        <dd property="foaf:mbox">doe@example.com</dd>
+        <dt>Tel:</dt>
+        <dd property="foaf:phone">555-3485</dd>
+    </dl>
+  </body>
+</html>

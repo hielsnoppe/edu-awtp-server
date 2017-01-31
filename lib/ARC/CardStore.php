@@ -25,23 +25,36 @@ class CardStore {
     public function getCards() {
     }
 
-    private function inferMissingTypes () {
+    //private function inferMissingTypes () {
+    public function inferMissingTypes () {
 
-        // ?s foaf:givenname ?o => ?s a foaf:Person
-        $query = Constants::SPARQL_PREFIXES . <<<SPARQL
+        // ?s foaf:___ [] => ?s a foaf:Person
+        $properties = [
+            // Status: stable
+            'knows',
+            // Status: testing
+            'currentProject', 'familyName', 'firstName', 'img', 'lastName',
+            'myersBriggs', 'pastProject', 'plan', 'publications',
+            'schoolHomepage', 'workInfoHomepage', 'workplaceHomepage',
+            // Status: archaic
+            'family_name', 'geekcode', 'givenname', 'surname'
+        ];
 
-SELECT ?person WHERE {
-    ?person a ?type ; ?p []
-    FILTER (!bound(?type) && (
-        ?p = foaf:firstname ||
-        ?p = foaf:lastname ||
-        ?p = foaf:givenname ||
-        ?p = foaf:familyname
-    ))
-}
-SPARQL;
-        // Add X rdf:type foaf:Person
-        $rows = $this->query($query);
+        $selectQuery = [
+            Constants::SPARQL_PREFIXES,
+            "SELECT DISTINCT ?person WHERE { ?person a ?type ; ?p [] .",
+            //"FILTER (!bound(?type) && ("
+            "FILTER (bound(?type) && ("
+        ];
+
+        array_push($selectQuery, implode(' || ', array_map(function ($property) {
+            return sprintf("?p = foaf:%s", $property);
+        }, $properties)));
+
+        array_push($selectQuery, "))", "}");
+        $selectQuery = implode("\n", $selectQuery);
+
+        $rs = $this->query($selectQuery);
 
         $updateQuery = [
             Constants::SPARQL_PREFIXES,
@@ -90,9 +103,14 @@ SPARQL;
         return 'TODO';
     }
 
+    private function query($query) {
+        return $this->store->query($query);
+    }
+
+    /*
     private function query(QueryBuilder $query) {
 
-        $this->store->query($query->format());
+        $result = $this->store->query($query->format());
 
         $error = $this->store->getErrors();
 
@@ -100,4 +118,5 @@ SPARQL;
 
         return $result["result"]["rows"];
     }
+    */
 }

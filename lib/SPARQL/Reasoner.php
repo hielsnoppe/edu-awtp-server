@@ -100,12 +100,13 @@ class Reasoner {
         ];
 
         array_push($selectQuery, implode(' || ', array_map(function ($property) {
-            return sprintf('?p = foaf:%s', $property);
+            return sprintf('?p = %s', $property);
         }, $properties)));
 
         array_push($selectQuery, '))', '}');
         $selectQuery = implode("\n", $selectQuery);
 
+        echo($selectQuery);
         return $this->store->query($selectQuery);
     }
 }

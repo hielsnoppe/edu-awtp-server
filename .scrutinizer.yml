@@ -9,6 +9,10 @@ build:
                 coverage:
                     file: 'coverage.xml'
                     format: 'php-clover'
+checks:
+    php:
+        code_rating: true
+        duplication: true
 coding_style:
     php:
         indentation:

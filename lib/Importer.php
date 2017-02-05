@@ -17,7 +17,8 @@ class Importer {
     private $store;
 
     private $sources = [
-        'http://localhost:8080/examples/rdfa.html'
+        //'http://localhost:8080/examples/rdfa.html',
+        'file:///vagrant/public/examples/rdfa.html'
     ];
 
     public function __construct ($config) {

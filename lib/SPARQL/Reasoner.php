@@ -83,7 +83,7 @@ class Reasoner {
 
                 foreach ($rs['result']['rows'] as $row) {
 
-                    $triples[] = [$row['person'], 'rdf:type', $type];
+                    $triples[] = [$row['s'], 'rdf:type', $type];
                 }
             }
         }
@@ -93,20 +93,20 @@ class Reasoner {
 
     public function findResourcesByProperty ($properties) {
 
-        $selectQuery = [
-            Constants::SPARQL_PREFIXES,
-            'SELECT DISTINCT ?person WHERE { ?person a ?type ; ?p [] .',
-            'FILTER (!bound(?type) && ('
-        ];
+        $query = Constants::SPARQL_PREFIXES . <<<SPARQL
+SELECT DISTINCT ?s WHERE {
+    ?s ?p [] .
+    OPTIONAL { ?s a ?type }
+    FILTER (!bound(?type))
+    FILTER (
+SPARQL;
 
-        array_push($selectQuery, implode(' || ', array_map(function ($property) {
+        $query .= implode(' || ', array_map(function ($property) {
             return sprintf('?p = %s', $property);
-        }, $properties)));
+        }, $properties));
 
-        array_push($selectQuery, '))', '}');
-        $selectQuery = implode("\n", $selectQuery);
+        $query .= "\n)\n}";
 
-        echo($selectQuery);
-        return $this->store->query($selectQuery);
+        return $this->store->query($query);
     }
 }

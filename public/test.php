@@ -16,8 +16,8 @@ $store = ARC2::getStore([
 ]);
 
 if (!$store->isSetUp()) $store->setUp();
-$store->reset();
-$store->query("LOAD <file:///vagrant/data/addressbook.rdf>");
+//$store->reset();
+//$store->query("LOAD <file:///vagrant/data/addressbook.rdf>");
 
 $builder = new MappingQueryBuilder([
     "vcard" => [
@@ -92,5 +92,14 @@ function getEvents ($store, $builder) {
 #getEvents($store, $builder);
 #echo($builder->getQuery("vcard:Individual", "vcard:VCard"));
 
-$rs = $store->query(Constants::SPARQL_ALL_DATA);
-var_dump($rs);
+#$rs = $store->query(Constants::SPARQL_ALL_DATA);
+#var_dump($rs);
+
+//$config = array('auto_extract' => 0);
+$parser = \ARC2::getSemHTMLParser();
+$parser->parse('http://localhost:8080/examples/rdfa.html');
+$parser->extractRDF('rdfa');
+
+$triples = $parser->getTriples();
+$n3 = $parser->toNTriples($triples);
+echo($n3);

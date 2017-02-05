@@ -2,6 +2,8 @@
 
 namespace NielsHoppe\AWTP\SPARQL;
 
+use NielsHoppe\AWTP\Constants;
+
 /**
  * @see https://en.wikipedia.org/wiki/VCard
  * @see https://en.wikipedia.org/wiki/HCard

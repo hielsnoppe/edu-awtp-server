@@ -17,7 +17,7 @@ class Importer {
     private $store;
 
     private $sources = [
-        'localhost:8080/examples/rdfa.html'
+        'http://localhost:8080/examples/rdfa.html'
     ];
 
     public function __construct ($config) {
@@ -30,7 +30,7 @@ class Importer {
         ]);
         $arcConfig["sem_html_formats"] = "rdfa microformats erdf openid dc";
 
-        $this->store = new \ARC2_Store($arcConfig);
+        $this->store = \ARC2::getStore($arcConfig);
     }
 
     public function exec () {

@@ -1,6 +1,6 @@
 <?php
 
-require_once("../vendor/autoload.php");
+require_once('../vendor/autoload.php');
 
 use \NielsHoppe\AWTP\CardDAV\VCardBuilder;
 use \NielsHoppe\AWTP\Config;
@@ -91,3 +91,6 @@ function getEvents ($store, $builder) {
 #getCards($store, $builder);
 #getEvents($store, $builder);
 #echo($builder->getQuery("vcard:Individual", "vcard:VCard"));
+
+$rs = $store->query(Constants::SPARQL_ALL_DATA);
+var_dump($rs);

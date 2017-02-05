@@ -2,6 +2,7 @@
 
 namespace NielsHoppe\AWTP\SPARQL;
 
+use NielsHoppe\AWTP\Constants;
 use Sabre\DAV;
 use Sabre\DAV\UUIDUtil;
 
@@ -75,12 +76,15 @@ class Reasoner {
 
         foreach ($rules as $type => $typerules) {
 
-            $properties = $typerules['rdf:domain'];
-            $rs = $this->findResourcesByProperty($properties);
+            if (array_key_exists('rdfs:domain', $typerules)) {
 
-            foreach ($rs['result']['rows'] as $row) {
+                $properties = $typerules['rdfs:domain'];
+                $rs = $this->findResourcesByProperty($properties);
 
-                $triples[] = [$row['person'], 'rdf:type', $type];
+                foreach ($rs['result']['rows'] as $row) {
+
+                    $triples[] = [$row['person'], 'rdf:type', $type];
+                }
             }
         }
 

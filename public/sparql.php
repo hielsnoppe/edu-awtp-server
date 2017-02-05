@@ -2,7 +2,7 @@
 
 include_once('../vendor/autoload.php');
 
-$config = \NielsHoppe\AWTP\Server\Config::getInstance();
+$config = \NielsHoppe\AWTP\Config::getInstance();
 
 /* MySQL and endpoint configuration */
 $config = array_merge($config->getAll([

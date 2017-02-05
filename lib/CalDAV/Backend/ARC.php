@@ -1,6 +1,6 @@
 <?php
 
-namespace \NielsHoppe\AWTP\Server\CalDAV\Backend;
+namespace \NielsHoppe\AWTP\CalDAV\Backend;
 
 use Sabre\CalDAV;
 use Sabre\CalDAV\Backend\AbstractBackend;

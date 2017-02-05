@@ -1,10 +1,10 @@
 <?php
 
-namespace NielsHoppe\AWTP\Server\CardDAV;
+namespace NielsHoppe\AWTP\CardDAV;
 
 use \Sabre\VObject;
 
-use \NielsHoppe\AWTP\Server\Constants;
+use \NielsHoppe\AWTP\Constants;
 
 class VCardBuilder {
 

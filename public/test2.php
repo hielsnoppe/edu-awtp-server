@@ -2,10 +2,10 @@
 
 require_once("../vendor/autoload.php");
 
-use \NielsHoppe\AWTP\Server\CardDAV\VCardBuilder;
-use \NielsHoppe\AWTP\Server\Config;
-use \NielsHoppe\AWTP\Server\Constants;
-use NielsHoppe\AWTP\Server\ARC\CardStore;
+use \NielsHoppe\AWTP\CardDAV\VCardBuilder;
+use \NielsHoppe\AWTP\Config;
+use \NielsHoppe\AWTP\Constants;
+use NielsHoppe\AWTP\ARC\CardStore;
 
 $store = ARC2::getStore([
     "db_name" => "scotchbox",

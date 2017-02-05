@@ -1,6 +1,6 @@
 <?php
 
-namespace NielsHoppe\AWTP\Server;
+namespace NielsHoppe\AWTP\SPARQL;
 
 /**
  * @see https://en.wikipedia.org/wiki/VCard

@@ -1,8 +1,8 @@
 <?php
 
-require_once '../vendor/autoload.php';
+require_once("../vendor/autoload.php");
 
-use \NielsHoppe\AWTP\Server;
+use NielsHoppe\AWTP\Importer;
 
 //Mapping PHP errors to exceptions
 function exception_error_handler($errno, $errstr, $errfile, $errline) {
@@ -11,5 +11,5 @@ function exception_error_handler($errno, $errstr, $errfile, $errline) {
 set_error_handler("exception_error_handler");
 
 $config = json_decode(file_get_contents("config.json"), true);
-$server = new Server($config);
-$server->exec();
+$importer = new Importer($config);
+$importer->exec();

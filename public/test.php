@@ -2,10 +2,11 @@
 
 require_once("../vendor/autoload.php");
 
-use \NielsHoppe\AWTP\Server\CardDAV\VCardBuilder;
-use \NielsHoppe\AWTP\Server\Config;
-use \NielsHoppe\AWTP\Server\Constants;
-use \NielsHoppe\AWTP\Server\MappingQueryBuilder;
+use \NielsHoppe\AWTP\CardDAV\VCardBuilder;
+use \NielsHoppe\AWTP\Config;
+use \NielsHoppe\AWTP\Constants;
+use \NielsHoppe\AWTP\SPARQL\MappingQueryBuilder;
+use \Sabre\VObject;
 
 $store = ARC2::getStore([
     "db_name" => "scotchbox",
@@ -47,29 +48,6 @@ $builder = new MappingQueryBuilder([
     ]
 ]);
 
-function generateMissingInternalIDs ($store) {
-
-    $query = Constants::SPARQL_ALL_VOBJECTS_WOID;
-    $rs = $store->query($query);
-
-    $updateQuery = [
-        Constants::SPARQL_PREFIXES,
-        "INSERT INTO <http://ns.nielshoppe.de/people> {"
-    ];
-
-    foreach ($rs['result']['rows'] as $row) {
-        $uri = $row['subject'];
-        $id = "TODO";
-        array_push($updateQuery, sprintf("<%s> app:id \"%s\" .", $uri, $id));
-    }
-
-    array_push($updateQuery, '}');
-    $updateQuery = implode("\n", $updateQuery);
-
-    echo($updateQuery); return;
-    $rs = $store->query($updateQuery);
-}
-
 function getCards ($store, $builder) {
 
     $query = $builder->getQuery("foaf:Person", "vcard:VCard");
@@ -110,7 +88,6 @@ function getEvents ($store, $builder) {
     }
 }
 
-generateMissingInternalIDs($store);
 #getCards($store, $builder);
 #getEvents($store, $builder);
 #echo($builder->getQuery("vcard:Individual", "vcard:VCard"));

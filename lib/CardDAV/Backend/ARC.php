@@ -1,11 +1,11 @@
 <?php
 
-namespace NielsHoppe\AWTP\Server\CardDAV\Backend;
+namespace NielsHoppe\AWTP\CardDAV\Backend;
 
 use Asparagus\QueryBuilder;
-use NielsHoppe\AWTP\Server\CardDAV\VCardBuilder;
-use NielsHoppe\AWTP\Server\Constants;
-use NielsHoppe\AWTP\Server\MappingQueryBuilder;
+use NielsHoppe\AWTP\CardDAV\VCardBuilder;
+use NielsHoppe\AWTP\Constants;
+use NielsHoppe\AWTP\SPARQL\MappingQueryBuilder;
 use Sabre\CardDAV;
 use Sabre\CardDAV\Backend\PDO;
 use Sabre\CardDAV\Backend\SyncSupport;

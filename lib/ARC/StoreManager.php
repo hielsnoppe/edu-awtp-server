@@ -11,13 +11,18 @@ use \NielsHoppe\AWTP\Constants;
 class StoreManager {
 
     /**
+     * @var array $config
+     */
+    private $config;
+    /**
      * @var \PDO $pdo
      */
     private $pdo;
 
-    public function __construct(PDO $pdo) {
+    public function __construct($pdo, array $config) {
 
-        $this->store = $store;
+        $this->config = $config;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -34,6 +39,10 @@ class StoreManager {
             "store_name" => $storeName
         );
 
-        return \ARC2::getStore($config);
+        $store = \ARC2::getStore($config);
+
+        if (!$store->isSetUp()) $store->setUp();
+
+        return $store;
     }
 }

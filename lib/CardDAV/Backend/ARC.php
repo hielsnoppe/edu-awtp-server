@@ -31,47 +31,10 @@ class ARC extends PDO implements SyncSupport {
      * @var mixed[]
      */
     protected $config;
-
     /**
-     * The PDO table name used to store ARC2 stores for addressbooks
+     * @var StoreManager $storemanager Store manager
      */
-    public $addressBooksStoresTableName = 'addressbooks_arcstores';
-
-    /**
-     * @var mixed[]
-     */
-    public static $queryPrefixes = array(
-        "rdf" => Constants::NS_RDF,
-        "rdfs" => Constants::NS_RDFS,
-
-        "vcard" => Constants::NS_VCARD,
-        "foaf" => Constants::NS_FOAF,
-        "bio" => Constants::NS_BIO,
-
-        "app" => Constants::NS_APP
-    );
-
-    public static $mappings = [
-        "vcard" => [
-            "vcard" => [
-                "fn" => "fn",
-                "given-name" => "given-name",
-                "family-name" => "family-name",
-                "nick" => "nick",
-                "hasEmail" => "hasEmail"
-            ]
-        ],
-        "foaf" => [
-            "vcard" => [
-                "name" => "fn",
-                "givenname" => "given-name",
-                "family_name" => "family-name",
-                "nick" => "nickname",
-                "homepage" => "hasURL",
-                "phone" => "hasTelephone"
-            ]
-        ]
-    ];
+    protected $storemanager;
 
     /**
      * Sets up the object
@@ -84,9 +47,10 @@ class ARC extends PDO implements SyncSupport {
         parent::__construct($pdo);
 
         $this->config = $config;
+        $this->storemanager = new StoreManager($this->pdo, $config);
     }
 
-    private function getPrincipalForAddressbook($addressbookId) {
+    private function getPrincipalForAddressBook($addressbookId) {
 
         $stmt = $this->pdo->prepare('SELECT principaluri FROM ' .
                 $this->addressBooksTableName . ' WHERE id = ?');
@@ -106,10 +70,8 @@ class ARC extends PDO implements SyncSupport {
 
     private function getStoreForAddressBook($addressbookId) {
 
-        $manager = new StoreManager($this->pdo);
-
-        $principal = $this->getPrincipalForAddressbook($addressbookId);
-        $store = $manager->getStore($principal);
+        $principal = $this->getPrincipalForAddressBook($addressbookId);
+        $store = $this->storemanager->getStore($principal);
 
         return $store;
     }
@@ -151,8 +113,6 @@ class ARC extends PDO implements SyncSupport {
     }
     */
 
-    // BEGIN
-
     /**
      * Creates a new address book
      *
@@ -161,6 +121,7 @@ class ARC extends PDO implements SyncSupport {
      * @param array $properties
      * @return int Last insert id
      */
+    /*
     function createAddressBook($principalUri, $url, array $properties) {
 
         $addressbookId = parent::createAddressBook($principalUri, $url, $properties);
@@ -170,6 +131,7 @@ class ARC extends PDO implements SyncSupport {
 
         return $addressbookId;
     }
+    */
 
     /**
      * Deletes an entire addressbook and all its contents
@@ -177,6 +139,7 @@ class ARC extends PDO implements SyncSupport {
      * @param int $addressbookId
      * @return void
      */
+    /*
     function deleteAddressBook($addressbookId) {
 
         $store = $this->getStoreForAddressBook($addressbookId);
@@ -184,6 +147,9 @@ class ARC extends PDO implements SyncSupport {
 
         parent::deleteAddressBook($addressbookId);
     }
+    */
+
+    // BEGIN
 
     /**
      * Returns all cards for a specific addressbook id.

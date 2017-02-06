@@ -10,6 +10,9 @@ use Sabre\DAV\UUIDUtil;
 
 /**
  * @see http://stackoverflow.com/a/2940696
+ * @see https://github.com/byjg/PHP-SPARQL-Lib
+ * @see https://github.com/njh/easyrdf
+ * @see https://github.com/semsol/arc2/wiki/Remote-Stores-and-Endpoints
  */
 class StoreController {
 

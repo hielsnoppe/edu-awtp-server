@@ -19,7 +19,7 @@ $config = array_merge($config->getAll([
     ),
     'endpoint_timeout' => 60, /* not implemented in ARC2 preview */
     'endpoint_read_key' => '', /* optional */
-    'endpoint_write_key' => 'REPLACE_THIS_WITH_SOME_KEY', /* optional, but without one, everyone can write! */
+    'endpoint_write_key' => '', /* optional, but without one, everyone can write! */
     'endpoint_max_limit' => 250, /* optional */
 ]);
 

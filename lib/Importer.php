@@ -29,6 +29,7 @@ class Importer {
         $arcConfig = $this->config->getAll([
             "db_host", "db_name", "db_user", "db_pwd"
         ]);
+        $arcConfig["store_name"] = "test";
         $arcConfig["sem_html_formats"] = "rdfa microformats erdf openid dc";
 
         $this->store = \ARC2::getStore($arcConfig);

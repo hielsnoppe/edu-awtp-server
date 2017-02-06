@@ -94,6 +94,7 @@ class Reasoner {
     public function findResourcesByProperty ($properties) {
 
         $query = Constants::SPARQL_PREFIXES . <<<SPARQL
+
 SELECT DISTINCT ?s WHERE {
     ?s ?p [] .
     OPTIONAL { ?s a ?type }

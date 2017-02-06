@@ -2,8 +2,8 @@
 
 namespace NielsHoppe\AWTP\CardDAV\Backend;
 
-use Util_TestDox_NamePrettifierTest;
 use Asparagus\QueryBuilder;
+use NielsHoppe\AWTP\ARC\StoreManager;
 use NielsHoppe\AWTP\ARC\StoreController;
 use NielsHoppe\AWTP\CardDAV\VCardBuilder;
 use NielsHoppe\AWTP\Constants;
@@ -86,40 +86,30 @@ class ARC extends PDO implements SyncSupport {
         $this->config = $config;
     }
 
-    private function getStoreForAddressBook($addressbookId) {
+    private function getPrincipalForAddressbook($addressbookId) {
 
-        /* TODO:
-        1. Get principal uri for addressbook
-        2. Get store name for principal
-         */
-        /*
-        $stmt = $this->pdo->prepare("SELECT storename FROM " .
-                $this->addressBooksStoresTableName .
-                " WHERE addressbookid = ?");
+        $stmt = $this->pdo->prepare('SELECT principaluri FROM ' .
+                $this->addressBooksTableName . ' WHERE id = ?');
         $stmt->execute([$addressbookId]);
 
         if ($stmt->rowCount()) {
 
-            $stmt->bindColumn("storename", $storeName);
+            $stmt->bindColumn('principaluri', $principalUri);
             $stmt->fetch(\PDO::FETCH_BOUND);
         }
         else {
-
-            // TODO Create entry in table
+            // Addressbook not found
         }
-        */
-        $storeName = "addressbook_" . strval($addressbookId);
-        $storeName = "test"; // XXX Override for testing
 
-        $config = array(
-            "db_host" => $this->config["db_host"],
-            "db_name" => $this->config["db_name"],
-            "db_user" => $this->config["db_user"],
-            "db_pwd" => $this->config["db_pwd"],
-            "store_name" => $storeName
-        );
+        return $principalUri;
+    }
 
-        $store = \ARC2::getStore($config);
+    private function getStoreForAddressBook($addressbookId) {
+
+        $manager = new StoreManager($this->pdo);
+
+        $principal = $this->getPrincipalForAddressbook($addressbookId);
+        $store = $manager->getStore($principal);
 
         return $store;
     }
@@ -219,12 +209,6 @@ class ARC extends PDO implements SyncSupport {
         $store = $this->getStoreForAddressBook($addressbookId);
         $controller = new StoreController($store);
 
-        /*
-        $builder = new MappingQueryBuilder(self::$mappings);
-
-        $rs = $store->query($builder->getQuery("foaf:Person", "vcard:VCard"));
-        $result = [];
-        */
         $rs = $controller->getCards();
 
         foreach ($rs["result"] as $uri => $data) {

@@ -33,7 +33,7 @@ class StoreController {
 
         $query = Constants::SPARQL_ALL_VCARDS;
 
-        return $rs = $this->store->query($query);
+        return $this->store->query($query);
     }
 
     /**

@@ -63,10 +63,11 @@ class Reasoner {
             foreach ($rs['result']['rows'] as $row) {
 
                 $subject = '<' . $row['s'] . '>';
+                $object = $row['o'];
 
                 switch ($row['o type']) {
-                    case 'uri': $object = '<' . $row['o'] . '>'; break;
-                    case 'literal': $object = '"' . $row['o'] . '"'; break;
+                    case 'uri': $object = '<' . $object . '>'; break;
+                    case 'literal': $object = '"' . $object . '"'; break;
                     default: break; // must not happen
                 }
 

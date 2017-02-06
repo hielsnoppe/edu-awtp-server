@@ -42,7 +42,7 @@ class ARC extends PDO implements SyncSupport {
      * @param \PDO $pdo
      * @param array $config Configuration for ARC2
      */
-    function __construct($pdo, array $config) {
+    function __construct(\PDO $pdo, array $config) {
 
         parent::__construct($pdo);
 
@@ -51,6 +51,8 @@ class ARC extends PDO implements SyncSupport {
     }
 
     private function getPrincipalForAddressBook($addressbookId) {
+
+        $principalUri = null;
 
         $stmt = $this->pdo->prepare('SELECT principaluri FROM ' .
                 $this->addressBooksTableName . ' WHERE id = ?');
@@ -172,6 +174,7 @@ class ARC extends PDO implements SyncSupport {
      */
     function getCards($addressbookId) {
 
+        $result = [];
         $store = $this->getStoreForAddressBook($addressbookId);
         $controller = new StoreController($store);
 
@@ -195,6 +198,7 @@ class ARC extends PDO implements SyncSupport {
             ];
         }
 
+        return $result;
         /*
         $stmt = $this->pdo->prepare('SELECT id, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ?');
         $stmt->execute([$addressbookId]);
@@ -206,7 +210,6 @@ class ARC extends PDO implements SyncSupport {
             $result[] = $row;
         }
         */
-        return $result;
     }
 
     /**

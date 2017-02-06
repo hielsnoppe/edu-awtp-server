@@ -104,7 +104,7 @@ SPARQL;
         return $this->store->query($query);
     }
 
-    private function findTriplesByProperty ($properties, $type = false) {
+    private function findTriplesByProperty ($properties) {
 
         $query = Constants::SPARQL_PREFIXES . <<<SPARQL
 

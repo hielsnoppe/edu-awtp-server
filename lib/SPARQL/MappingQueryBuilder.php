@@ -22,15 +22,6 @@ class MappingQueryBuilder {
 
     private $mappings;
 
-    private $isA = [
-        "vcard:VCard" => [
-            "vcard:Individual", "vcard:Organization", "vcard:Location", "vcard:Group"
-        ],
-        "vcard:Individual" => [
-            "foaf:Person"
-        ]
-    ];
-
     public function __construct ($mappings) {
 
         $this->mappings = $mappings;

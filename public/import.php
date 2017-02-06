@@ -2,8 +2,8 @@
 
 require_once('../vendor/autoload.php');
 
-use NielsHoppe\AWTP\Functions;
-use NielsHoppe\AWTP\Importer;
+use \NielsHoppe\AWTP\Functions;
+use \NielsHoppe\AWTP\Importer;
 
 //Mapping PHP errors to exceptions
 set_error_handler([Functions::class, 'exception_error_handler']);

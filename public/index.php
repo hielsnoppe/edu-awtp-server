@@ -2,6 +2,7 @@
 
 require_once '../vendor/autoload.php';
 
+use \NielsHoppe\AWTP\Functions;
 use \NielsHoppe\AWTP\Server;
 
 //Mapping PHP errors to exceptions

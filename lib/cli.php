@@ -1,7 +1,18 @@
+#!/usr/bin/env php
 <?php
 
-require_once('../vendor/autoload.php');
+require '../vendor/autoload.php';
 
+use NielsHoppe\AWTP\Console\ImportCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+$application->add(new ImportCommand());
+
+$application->run();
+
+/*
 use \NielsHoppe\AWTP\CardDAV\VCardBuilder;
 use \NielsHoppe\AWTP\Config;
 use \NielsHoppe\AWTP\Constants;
@@ -57,12 +68,12 @@ function getCards ($store, $builder) {
         echo("\n\n" . $uri . "\n\n");
         var_dump($data);
 
-        /*
+        //*
         $builder = new VCardBuilder();
         $builder->readFromRDF($data);
         $card = $builder->getCard();
         echo($card->serialize());
-        //*/
+        //* /
 
         echo("\n");
     }
@@ -76,14 +87,14 @@ function getEvents ($store, $builder) {
     foreach ($rs["result"] as $uri => $data) {
         echo("\n\n" . $uri . "\n\n");
         var_dump($data);
-        /*
+        //*
 
         $builder = new VCardBuilder();
         $builder->readFromRDF($data);
         $card = $builder->getCard();
 
         echo($card->serialize());
-        //*/
+        //* /
         echo("\n");
     }
 }
@@ -103,3 +114,4 @@ $parser->extractRDF('rdfa');
 $triples = $parser->getTriples();
 $n3 = $parser->toNTriples($triples);
 echo($n3);
+*/

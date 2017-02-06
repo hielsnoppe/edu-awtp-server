@@ -1,0 +1,3 @@
+RewriteEngine On
+# This makes every request go to server.php
+RewriteRule .* index.php [L]

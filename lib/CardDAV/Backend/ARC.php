@@ -223,11 +223,11 @@ class ARC extends PDO implements SyncSupport {
      */
     function getCard($addressbookId, $cardUri) {
 
+        $result = false;
         $store = $this->getStoreForAddressbook($addressbookId);
         $controller = new StoreController($store);
 
         $rs = $controller->getCard($cardUri);
-        #var_dump($rs); exit();
 
         foreach ($rs["result"] as $uri => $data) {
 
@@ -241,6 +241,8 @@ class ARC extends PDO implements SyncSupport {
             ];
         }
 
+        return $result;
+
         /*
         $stmt = $this->pdo->prepare('SELECT id, carddata, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ? LIMIT 1');
         $stmt->execute([$addressbookId, $cardUri]);
@@ -253,8 +255,6 @@ class ARC extends PDO implements SyncSupport {
         $result['lastmodified'] = (int)$result['lastmodified'];
         return $result;
         */
-
-        return $result;
     }
 
     /**

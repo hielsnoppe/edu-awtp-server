@@ -19,5 +19,8 @@
         "psr-4": {
             "NielsHoppe\\AWTP\\" : "lib/"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --bootstrap vendor/autoload.php test/"
     }
 }

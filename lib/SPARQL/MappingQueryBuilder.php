@@ -22,17 +22,6 @@ class MappingQueryBuilder {
 
     private $mappings;
 
-    private static $prefixes = [
-        "rdf" => Constants::NS_RDF,
-        "rdfs" => Constants::NS_RDFS,
-
-        "vcard" => Constants::NS_VCARD,
-        "foaf" => Constants::NS_FOAF,
-        "bio" => Constants::NS_BIO,
-
-        "app" => Constants::NS_APP
-    ];
-
     private $isA = [
         "vcard:VCard" => [
             "vcard:Individual", "vcard:Organization", "vcard:Location", "vcard:Group"
@@ -83,22 +72,11 @@ class MappingQueryBuilder {
         return "WHERE {\n$q\n}\n";
     }
 
-    private function prefixes () {
-
-        $result = "";
-
-        foreach (self::$prefixes as $prefix => $namespace) {
-            $result .= "PREFIX $prefix: <$namespace>\n";
-        }
-
-        return $result;
-    }
-
     private function query ($sourceNS, $sourceType, $targetNS, $targetType, $mappings) {
 
         $mapping = $mappings[$sourceNS][$targetNS];
 
-        return prefixes() . "\n\n"
+        return Constants::SPARQL_PREFIXES . "\n\n"
                 . construct($targetNS, $targetType, $mapping) . "\n"
                 . where($sourceNS, $sourceType, $mapping) . "\n"
                 ;
@@ -111,7 +89,7 @@ class MappingQueryBuilder {
 
         $mapping = $this->mappings[$sourcePrefix][$targetPrefix];
 
-        $query = $this->prefixes() . "\n\n";
+        $query = Constants::SPARQL_PREFIXES . "\n\n";
         $query .= $this->construct($targetPrefix, $targetType, $mapping);
         $query .= $this->where($sourcePrefix, $sourceType, $mapping);
 

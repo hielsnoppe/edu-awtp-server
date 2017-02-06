@@ -2,7 +2,9 @@
 
 namespace NielsHoppe\AWTP\CardDAV\Backend;
 
+use Util_TestDox_NamePrettifierTest;
 use Asparagus\QueryBuilder;
+use NielsHoppe\AWTP\ARC\StoreController;
 use NielsHoppe\AWTP\CardDAV\VCardBuilder;
 use NielsHoppe\AWTP\Constants;
 use NielsHoppe\AWTP\SPARQL\MappingQueryBuilder;
@@ -86,6 +88,10 @@ class ARC extends PDO implements SyncSupport {
 
     private function getStoreForAddressBook($addressbookId) {
 
+        /* TODO:
+        1. Get principal uri for addressbook
+        2. Get store name for principal
+         */
         /*
         $stmt = $this->pdo->prepare("SELECT storename FROM " .
                 $this->addressBooksStoresTableName .
@@ -211,22 +217,31 @@ class ARC extends PDO implements SyncSupport {
     function getCards($addressbookId) {
 
         $store = $this->getStoreForAddressBook($addressbookId);
+        $controller = new StoreController($store);
+
+        /*
         $builder = new MappingQueryBuilder(self::$mappings);
 
         $rs = $store->query($builder->getQuery("foaf:Person", "vcard:VCard"));
         $result = [];
+        */
+        $rs = $controller->getCards();
 
         foreach ($rs["result"] as $uri => $data) {
 
             $builder = new VCardBuilder();
             $builder->readFromRDF($data);
-            $newUri = md5($uri);
-            $store->query("INSERT DATA { $uri owl:sameAs $newUri . }");
+
+            $uri = 'ERROR';
+            if (array_key_exists(Constants::NS_APP . 'id', $data)) {
+
+                $uri = $data[Constants::NS_APP . 'id'][0]['value'];
+            }
 
             // id, uri, lastmodified, etag, size, carddata
             $result[] = [
-                "uri" => md5($uri),
-                "carddata" => $builder->getCard()->serialize()
+                'uri' => $uri,
+                'carddata' => $builder->getCard()->serialize()
             ];
         }
 
@@ -259,10 +274,10 @@ class ARC extends PDO implements SyncSupport {
     function getCard($addressbookId, $cardUri) {
 
         $store = $this->getStoreForAddressbook($addressbookId);
-        $builder = new MappingQueryBuilder(self::$mappings);
+        $controller = new StoreController($store);
 
-        $rs = $store->query($builder->getQuery("foaf:Person", "vcard:VCard"));
-        $result = [];
+        $rs = $controller->getCard($cardUri);
+        #var_dump($rs); exit();
 
         foreach ($rs["result"] as $uri => $data) {
 
@@ -270,25 +285,13 @@ class ARC extends PDO implements SyncSupport {
             $builder->readFromRDF($data);
 
             // id, uri, lastmodified, etag, size, carddata
-            $result[] = [
+            $result = [
                 "uri" => md5($uri),
                 "carddata" => $builder->getCard()->serialize()
             ];
         }
 
-        $query = new QueryBuilder(self::$queryPrefixes);
-        $query->select("?fn")
-            ->where("?card", "vcard:fn", "?fn")
-            ->where("?card", "rdf:about", $cardUri);
-
-        $rs = $store->query($query->format());
-        $err = $store->getErrors();
-
-        if (!$err) {
-
-            $rows = $rs["result"]["rows"];
-        }
-
+        /*
         $stmt = $this->pdo->prepare('SELECT id, carddata, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ? LIMIT 1');
         $stmt->execute([$addressbookId, $cardUri]);
 
@@ -299,7 +302,9 @@ class ARC extends PDO implements SyncSupport {
         $result['etag'] = '"' . $result['etag'] . '"';
         $result['lastmodified'] = (int)$result['lastmodified'];
         return $result;
+        */
 
+        return $result;
     }
 
     /**

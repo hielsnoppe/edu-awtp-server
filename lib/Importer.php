@@ -2,6 +2,7 @@
 
 namespace NielsHoppe\AWTP;
 
+use NielsHoppe\AWTP\ARC\StoreController;
 use NielsHoppe\AWTP\SPARQL\Reasoner;
 use Sabre\DAV;
 
@@ -17,8 +18,8 @@ class Importer {
     private $store;
 
     private $sources = [
-        //'http://localhost:8080/examples/rdfa.html',
-        'file:///vagrant/public/examples/rdfa.html'
+        //'http://localhost:8080/example.html',
+        'file:///vagrant/public/example.html'
     ];
 
     public function __construct ($config) {
@@ -37,14 +38,26 @@ class Importer {
 
     public function exec () {
 
+        $graph = $this->config->get('dev_graph_name');
+        
         foreach ($this->sources as $source) {
 
-            $this->store->query("LOAD <$source>");
+            $this->store->query("LOAD <$source>"); // INTO <$graph>
         }
 
+        $controller = new StoreController($this->store);
         $reasoner = new Reasoner($this->store);
-        $triples = $reasoner->inferTypes(Reasoner::RULES_TYPES);
 
-        var_dump($triples);
+        // Step 1: Ensure that all relevant resources have a type
+        $triples = $reasoner->inferTypes(Constants::RULES_TYPES);
+        $controller->insertTriples($graph, $triples);
+
+        // Step 2: Ensure that all relevant resources have an internal identifier
+        $triples = $controller->generateIDs();
+        $controller->insertTriples($graph, $triples);
+
+        // Step 3: Translate properties from known vocabularies to vCard
+        $triples = $reasoner->inferProperties(Constants::RULES_PROPERTIES);
+        $controller->insertTriples($graph, $triples);
     }
 }

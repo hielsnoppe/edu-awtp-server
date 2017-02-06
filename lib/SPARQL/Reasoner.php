@@ -9,47 +9,6 @@ use Sabre\DAV\UUIDUtil;
 class Reasoner {
 
     /**
-     * Heads up! The array notations must be read "from inside out". Example:
-     *
-     * ['?type1']['rdfs:subClassOf'][0] == '?type2'
-     * implies
-     * ?type2 rdfs:subClassOf ?type1
-     *
-     * ['?type']['rdfs:domain'][0] == '?pN';
-     * implies
-     * ?s ?pN [] => ?s a ?type
-     */
-    const RULES_TYPES = [
-        'vcard:VCard' => [
-            'rdfs:subClassOf' => [
-                "vcard:Individual", "vcard:Organization", "vcard:Location", "vcard:Group"
-            ]
-        ],
-        /*
-        "vcard:Individual" => [
-            'rdfs:subClassOf' => [
-                "foaf:Person"
-            ]
-        ]
-        */
-        'foaf:Person' => [
-            'rdfs:domain' => [
-                // Status: stable
-                'foaf:knows',
-                // Status: testing
-                'foaf:currentProject', 'foaf:familyName', 'foaf:firstName',
-                'foaf:img', 'foaf:lastName', 'foaf:myersBriggs',
-                'foaf:pastProject', 'foaf:plan', 'foaf:publications',
-                'foaf:schoolHomepage', 'foaf:workInfoHomepage',
-                'foaf:workplaceHomepage',
-                // Status: archaic
-                'foaf:family_name', 'foaf:geekcode', 'foaf:givenname',
-                'foaf:surname'
-            ]
-        ]
-    ];
-
-    /**
      * @var \ARC2_Store
      */
     private $store;
@@ -83,7 +42,9 @@ class Reasoner {
 
                 foreach ($rs['result']['rows'] as $row) {
 
-                    $triples[] = [$row['s'], 'rdf:type', $type];
+                    $subject = '<' . $row['s'] . '>';
+
+                    $triples[] = [$subject, 'rdf:type', $type];
                 }
             }
         }
@@ -91,22 +52,72 @@ class Reasoner {
         return $triples;
     }
 
-    public function findResourcesByProperty ($properties) {
+    public function inferProperties ($rules) {
+
+        $triples = [];
+
+        foreach ($rules as $predicate => $synonyms) {
+
+            $rs = $this->findTriplesByProperty($synonyms);
+
+            foreach ($rs['result']['rows'] as $row) {
+
+                $subject = '<' . $row['s'] . '>';
+
+                switch ($row['o type']) {
+                    case 'uri': $object = '<' . $row['o'] . '>'; break;
+                    case 'literal': $object = '"' . $row['o'] . '"'; break;
+                    default: break; // must not happen
+                }
+
+                $triples[] = [$subject, $predicate, $object];
+            }
+        }
+
+        return $triples;
+    }
+
+    /*
+     * private methods
+     */
+
+    private function findResourcesByProperty ($properties) {
 
         $query = Constants::SPARQL_PREFIXES . <<<SPARQL
 
 SELECT DISTINCT ?s WHERE {
     ?s ?p [] .
     OPTIONAL { ?s a ?type }
-    FILTER (!bound(?type))
-    FILTER (
 SPARQL;
 
+        $query .= "\n" . 'FILTER (!bound(?type))' . "\n";
+
+        $query .= 'FILTER (';
         $query .= implode(' || ', array_map(function ($property) {
             return sprintf('?p = %s', $property);
         }, $properties));
+        $query .= ")\n";
 
-        $query .= "\n)\n}";
+        $query .= "\n}";
+
+        return $this->store->query($query);
+    }
+
+    private function findTriplesByProperty ($properties, $type = false) {
+
+        $query = Constants::SPARQL_PREFIXES . <<<SPARQL
+
+SELECT ?s ?p ?o WHERE {
+    ?s ?p ?o ; a ?type .
+SPARQL;
+
+        $query .= 'FILTER (';
+        $query .= implode(' || ', array_map(function ($property) {
+            return sprintf('?p = %s', $property);
+        }, $properties));
+        $query .= ")\n";
+
+        $query .= "\n}";
 
         return $this->store->query($query);
     }

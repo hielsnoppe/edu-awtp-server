@@ -15,5 +15,6 @@
         "foaf": "http://xmlns.com/foaf/0.1/",
         "bio": "http://purl.org/vocab/bio/0.1/",
         "app": "http://vocab.nielshoppe.de/edu-awtp-server/#"
-    }
+    },
+    "dev_graph_name": "http://ns.nielshoppe.de/people"
 }

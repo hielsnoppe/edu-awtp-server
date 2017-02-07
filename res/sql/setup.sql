@@ -9,5 +9,6 @@ CREATE TABLE sources (
     sourceid INTEGER UNSIGNED NOT NULL PRIMARY KEY,
     url VARCHAR(511),
     refresh_interval INTEGER,
-    last_accessed INTEGER
+    last_accessed INTEGER,
+    addressbookid INTEGER UNSIGNED NOT NULL
 )

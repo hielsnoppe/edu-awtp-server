@@ -1,8 +1,9 @@
 <?php
 
-namespace NielsHoppe\RDFDAV\Console;
+namespace NielsHoppe\RDFDAV\Console\Command;
 
 use NielsHoppe\RDFDAV\Constants;
+use NielsHoppe\RDFDAV\Console\Command\AbstractCommand;
 use NielsHoppe\RDFDAV\SPARQL\MappingQueryBuilder;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

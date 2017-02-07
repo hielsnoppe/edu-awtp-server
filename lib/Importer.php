@@ -57,18 +57,18 @@ class Importer {
         $this->log->info('Find and infer missing types...');
         $triples = $reasoner->inferTypes(Constants::RULES_TYPES);
         $controller->insertTriples($graph, $triples);
-        $this->log->info('Done.');
+        $this->log->info(sprintf('Done. Found %u new triples.', count($triples)));
 
         // Step 2: Ensure that all relevant resources have an internal identifier
         $this->log->info('Find and generate missing IDs...');
         $triples = $controller->generateIDs();
         $controller->insertTriples($graph, $triples);
-        $this->log->info('Done.');
+        $this->log->info(sprintf('Done. Found %u new triples.', count($triples)));
 
         // Step 3: Translate properties from known vocabularies to vCard
         $this->log->info('Translate properties from known vocabularies to vCard...');
         $triples = $reasoner->inferProperties(Constants::RULES_PROPERTIES);
         $controller->insertTriples($graph, $triples);
-        $this->log->info('Done.');
+        $this->log->info(sprintf('Done. Found %u new triples.', count($triples)));
     }
 }

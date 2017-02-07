@@ -4,9 +4,7 @@ namespace NielsHoppe\RDFDAV;
 
 class Config {
 
-    private static $instance;
-
-    private static $defaults = [
+    const DEFAULT_VALUES = [
         "db_host" => "127.0.0.1",
         "db_name" => "scotchbox",
         "db_user" => "root",
@@ -19,6 +17,8 @@ class Config {
     ];
 
     private $values = [];
+
+    private static $instance;
 
     private function __construct () {
     }
@@ -39,9 +39,9 @@ class Config {
 
             return $this->values[$key];
         }
-        else if ($default && array_key_exists($key, self::$defaults)) {
+        else if ($default && array_key_exists($key, self::DEFAULT_VALUES)) {
 
-            return self::$defaults[$key];
+            return self::DEFAULT_VALUES[$key];
         }
         else return null;
     }
@@ -54,7 +54,7 @@ class Config {
 
         if ($defaults) {
 
-            $values = Functions::array_extract(self::$defaults, $keys);
+            $values = Functions::array_extract(self::DEFAULT_VALUES, $keys);
         }
 
         $values = array_merge($values,

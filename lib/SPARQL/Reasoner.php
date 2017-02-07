@@ -3,6 +3,7 @@
 namespace NielsHoppe\RDFDAV\SPARQL;
 
 use NielsHoppe\RDFDAV\Constants;
+use phpDocumentor\Reflection\Type;
 use Sabre\DAV;
 use Sabre\DAV\UUIDUtil;
 
@@ -35,17 +36,45 @@ class Reasoner {
 
         foreach ($rules as $type => $typerules) {
 
+            $resources = [];
+
             if (array_key_exists('rdfs:domain', $typerules)) {
 
                 $properties = $typerules['rdfs:domain'];
                 $rs = $this->findResourcesByProperty($properties);
 
-                foreach ($rs['result']['rows'] as $row) {
+                if (is_array($rs)) {
 
-                    $subject = '<' . $row['s'] . '>';
-
-                    $triples[] = [$subject, 'rdf:type', $type];
+                    $resources = array_merge($resources, $rs['result']['rows']);
                 }
+            }
+
+            if (array_key_exists('rdfs:subClassOf', $typerules)) {
+
+                $subclasses = $typerules['rdfs:subClassOf'];
+                $rs = $this->findResourcesByType($subclasses);
+
+                if (is_array($rs)) {
+
+                    $resources = array_merge($resources, $rs['result']['rows']);
+                }
+            }
+
+            if (array_key_exists('owl:equivalentClass', $typerules)) {
+
+                $equivalents = $typerules['owl:equivalentClass'];
+                $rs = $this->findResourcesByType($equivalents);
+
+                if (is_array($rs)) {
+
+                    $resources = array_merge($resources, $rs['result']['rows']);
+                }
+            }
+
+            foreach ($resources as $resource) {
+
+                $subject = '<' . $resource['s'] . '>';
+                $triples[] = [$subject, 'rdf:type', $type];
             }
         }
 
@@ -97,6 +126,24 @@ SPARQL;
         $query .= implode(' || ', array_map(function ($property) {
             return sprintf('?p = %s', $property);
         }, $properties));
+        $query .= ")\n";
+
+        $query .= "\n}";
+
+        return $this->store->query($query);
+    }
+
+    private function findResourcesByType ($types) {
+
+        $query = Constants::SPARQL_PREFIXES . <<<SPARQL
+SELECT DISTINCT ?s WHERE {
+    ?s a ?t
+SPARQL;
+
+        $query .= 'FILTER (';
+        $query .= implode(' || ', array_map(function ($type) {
+            return sprintf('?t = %s', $type);
+        }, $types));
         $query .= ")\n";
 
         $query .= "\n}";

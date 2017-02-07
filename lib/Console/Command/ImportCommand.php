@@ -1,10 +1,10 @@
 <?php
 
-namespace NielsHoppe\RDFDAV\Console;
+namespace NielsHoppe\RDFDAV\Console\Command;
 
 use NielsHoppe\RDFDAV\Importer;
 use NielsHoppe\RDFDAV\ARC\StoreManager;
-use NielsHoppe\RDFDAV\Console\AbstractCommand;
+use NielsHoppe\RDFDAV\Console\Command\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,8 +31,13 @@ class ImportCommand extends AbstractCommand {
         $sources = [
             [
                 'principal' => 'principals/admin',
-                //'url' => 'http://localhost:8080/example.html',
-                'url' => 'file:///vagrant/public/example.html',
+                'url' => 'http://localhost/example.html',
+                'refresh_interval' => 0,
+                'last_accessed' => 0
+            ],
+            [
+                'principal' => 'principals/admin',
+                'url' => 'file:///var/www/data/addressbook.rdf',
                 'refresh_interval' => 0,
                 'last_accessed' => 0
             ]

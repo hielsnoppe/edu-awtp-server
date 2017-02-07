@@ -51,16 +51,27 @@ class Constants {
     const RULES_TYPES = [
         'vcard:VCard' => [
             'rdfs:subClassOf' => [
-                "vcard:Individual", "vcard:Organization", "vcard:Location", "vcard:Group"
+                'vcard:Individual', 'vcard:Organization', 'vcard:Location', 'vcard:Group'
+            ],
+            'owl:equivalentClass' => [
+                'hcard:Vcard'
             ]
         ],
-        /*
-        "vcard:Individual" => [
-            'rdfs:subClassOf' => [
-                "foaf:Person"
+        'vcard:Individual' => [
+            'owl:equivalentClass' => [
+                'foaf:Person'
             ]
-        ]
-        */
+        ],
+        'vcard:Organization' => [
+            'owl:equivalentClass' => [
+                'foaf:Organization'
+            ]
+        ],
+        'vcard:Group' => [
+            'owl:equivalentClass' => [
+                'foaf:Group'
+            ]
+        ],
         'foaf:Person' => [
             'rdfs:domain' => [
                 // Status: stable

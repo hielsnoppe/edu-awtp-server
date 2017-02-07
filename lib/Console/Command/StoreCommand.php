@@ -1,8 +1,8 @@
 <?php
 
-namespace NielsHoppe\RDFDAV\Console;
+namespace NielsHoppe\RDFDAV\Console\Command;
 
-use NielsHoppe\RDFDAV\Console\AbstractCommand;
+use NielsHoppe\RDFDAV\Console\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

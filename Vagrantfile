@@ -39,7 +39,8 @@ Vagrant.configure(2) do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
+  #config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
+  config.vm.synced_folder ".", "/var/www"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -70,6 +71,11 @@ Vagrant.configure(2) do |config|
   #   sudo apt-get update
   #   sudo apt-get install -y apache2
   # SHELL
+  
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt-get install cadaver
+  SHELL
+
   config.vm.provision "shell", run: "always", inline: <<-SHELL
     sudo service beanstalkd stop
     sudo service mongod stop

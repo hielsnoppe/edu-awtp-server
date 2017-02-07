@@ -3,9 +3,9 @@
 
 require '../vendor/autoload.php';
 
-use NielsHoppe\RDFDAV\Console\ImportCommand;
-use NielsHoppe\RDFDAV\Console\SetupCommand;
-use NielsHoppe\RDFDAV\Console\StoreCommand;
+use NielsHoppe\RDFDAV\Console\Command\ImportCommand;
+use NielsHoppe\RDFDAV\Console\Command\SetupCommand;
+use NielsHoppe\RDFDAV\Console\Command\StoreCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();

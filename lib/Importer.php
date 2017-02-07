@@ -4,6 +4,7 @@ namespace NielsHoppe\RDFDAV;
 
 use NielsHoppe\RDFDAV\ARC\StoreController;
 use NielsHoppe\RDFDAV\SPARQL\Reasoner;
+use Psr\Log\LoggerInterface;
 use Sabre\DAV;
 
 class Importer {
@@ -16,13 +17,14 @@ class Importer {
      * @var \ARC2_Store
      */
     private $store;
+    /**
+     * Logger
+     */
+    private $log;
 
-    private $sources = [
-        //'http://localhost:8080/example.html',
-        'file:///vagrant/public/example.html'
-    ];
+    public function __construct ($config, LoggerInterface $log) {
 
-    public function __construct ($config) {
+        $this->log = $log;
 
         $this->config = Config::getInstance();
         $this->config->setAll($config);
@@ -36,28 +38,38 @@ class Importer {
         $this->store = \ARC2::getStore($arcConfig);
     }
 
-    public function exec () {
+    #public function load ($store, $source, $graph) {
+    public function load ($source) {
+
+        $query = "LOAD <$source>"; // INTO <$graph>
+        $this->log->info($query);
+        #$store->query($query);
+        $this->store->query($query);
+    }
+
+    public function process () {
 
         $graph = $this->config->get('dev_graph_name');
-        
-        foreach ($this->sources as $source) {
-
-            $this->store->query("LOAD <$source>"); // INTO <$graph>
-        }
 
         $controller = new StoreController($this->store);
         $reasoner = new Reasoner($this->store);
 
         // Step 1: Ensure that all relevant resources have a type
+        $this->log->info('Find and infer missing types...');
         $triples = $reasoner->inferTypes(Constants::RULES_TYPES);
         $controller->insertTriples($graph, $triples);
+        $this->log->info('Done.');
 
         // Step 2: Ensure that all relevant resources have an internal identifier
+        $this->log->info('Find and generate missing IDs...');
         $triples = $controller->generateIDs();
         $controller->insertTriples($graph, $triples);
+        $this->log->info('Done.');
 
         // Step 3: Translate properties from known vocabularies to vCard
+        $this->log->info('Translate properties from known vocabularies to vCard...');
         $triples = $reasoner->inferProperties(Constants::RULES_PROPERTIES);
         $controller->insertTriples($graph, $triples);
+        $this->log->info('Done.');
     }
 }

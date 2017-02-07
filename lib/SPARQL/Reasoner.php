@@ -1,8 +1,8 @@
 <?php
 
-namespace NielsHoppe\AWTP\SPARQL;
+namespace NielsHoppe\RDFDAV\SPARQL;
 
-use NielsHoppe\AWTP\Constants;
+use NielsHoppe\RDFDAV\Constants;
 use Sabre\DAV;
 use Sabre\DAV\UUIDUtil;
 

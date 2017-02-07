@@ -1,5 +1,5 @@
 {
-    "name": "hielsnoppe/edu-awtp-server",
+    "name": "hielsnoppe/rdfdav",
     "require": {
         "sabre/dav": "^3.2",
         "semsol/arc2": "^2.3",
@@ -18,7 +18,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "NielsHoppe\\AWTP\\" : "lib/"
+            "NielsHoppe\\RDFDAV\\" : "lib/"
         }
     },
     "scripts": {

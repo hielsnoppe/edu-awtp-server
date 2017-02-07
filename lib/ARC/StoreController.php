@@ -1,10 +1,10 @@
 <?php
 
-namespace NielsHoppe\AWTP\ARC;
+namespace NielsHoppe\RDFDAV\ARC;
 
 use \ARC2_Store;
 use \Asparagus\QueryBuilder;
-use \NielsHoppe\AWTP\Constants;
+use \NielsHoppe\RDFDAV\Constants;
 use \Sabre\VObject;
 use Sabre\DAV\UUIDUtil;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace NielsHoppe\AWTP\ARC;
+namespace NielsHoppe\RDFDAV\ARC;
 
 use \ARC2_Store;
-use \NielsHoppe\AWTP\Constants;
+use \NielsHoppe\RDFDAV\Constants;
 
 /**
  * @see http://stackoverflow.com/a/2940696

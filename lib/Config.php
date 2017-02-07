@@ -1,6 +1,6 @@
 <?php
 
-namespace NielsHoppe\AWTP;
+namespace NielsHoppe\RDFDAV;
 
 class Config {
 

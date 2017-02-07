@@ -2,7 +2,7 @@
 
 include_once('../vendor/autoload.php');
 
-$config = \NielsHoppe\AWTP\Config::getInstance();
+$config = \NielsHoppe\RDFDAV\Config::getInstance();
 
 /* MySQL and endpoint configuration */
 $config = array_merge($config->getAll([

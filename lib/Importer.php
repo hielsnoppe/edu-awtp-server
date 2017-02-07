@@ -1,9 +1,9 @@
 <?php
 
-namespace NielsHoppe\AWTP;
+namespace NielsHoppe\RDFDAV;
 
-use NielsHoppe\AWTP\ARC\StoreController;
-use NielsHoppe\AWTP\SPARQL\Reasoner;
+use NielsHoppe\RDFDAV\ARC\StoreController;
+use NielsHoppe\RDFDAV\SPARQL\Reasoner;
 use Sabre\DAV;
 
 class Importer {

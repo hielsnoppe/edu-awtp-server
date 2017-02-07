@@ -1,6 +1,6 @@
 <?php
 
-namespace NielsHoppe\AWTP;
+namespace NielsHoppe\RDFDAV;
 
 use Sabre\DAV;
 

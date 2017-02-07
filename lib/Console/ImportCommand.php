@@ -1,10 +1,10 @@
 <?php
 
-namespace NielsHoppe\AWTP\Console;
+namespace NielsHoppe\RDFDAV\Console;
 
-use NielsHoppe\AWTP\Config;
-use NielsHoppe\AWTP\ARC\StoreController;
-use NielsHoppe\AWTP\SPARQL\Reasoner;
+use NielsHoppe\RDFDAV\Config;
+use NielsHoppe\RDFDAV\ARC\StoreController;
+use NielsHoppe\RDFDAV\SPARQL\Reasoner;
 use Sabre\DAV;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

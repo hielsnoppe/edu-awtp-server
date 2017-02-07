@@ -3,7 +3,7 @@
 
 require '../vendor/autoload.php';
 
-use NielsHoppe\AWTP\Console\ImportCommand;
+use NielsHoppe\RDFDAV\Console\ImportCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application();
@@ -13,10 +13,10 @@ $application->add(new ImportCommand());
 $application->run();
 
 /*
-use \NielsHoppe\AWTP\CardDAV\VCardBuilder;
-use \NielsHoppe\AWTP\Config;
-use \NielsHoppe\AWTP\Constants;
-use \NielsHoppe\AWTP\SPARQL\MappingQueryBuilder;
+use \NielsHoppe\RDFDAV\CardDAV\VCardBuilder;
+use \NielsHoppe\RDFDAV\Config;
+use \NielsHoppe\RDFDAV\Constants;
+use \NielsHoppe\RDFDAV\SPARQL\MappingQueryBuilder;
 use \Sabre\VObject;
 
 $store = ARC2::getStore([

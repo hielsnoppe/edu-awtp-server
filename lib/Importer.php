@@ -38,6 +38,10 @@ class Importer {
     }
 
     #public function load ($store, $source, $graph) {
+
+    /**
+     * @param string $source
+     */
     public function load ($source) {
 
         $query = "LOAD <$source>"; // INTO <$graph>

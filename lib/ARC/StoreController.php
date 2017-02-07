@@ -38,6 +38,7 @@ class StoreController {
 
     /**
      * @todo Refactor
+     * @param string $cardUri
      */
     public function getCard ($cardUri) {
 

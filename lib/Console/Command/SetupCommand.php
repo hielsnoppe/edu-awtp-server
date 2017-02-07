@@ -173,6 +173,10 @@ class SetupCommand extends AbstractCommand {
         return true;
     }
 
+    /**
+     * @see https://help.ubuntu.com/community/CronHowto
+     * @see http://stackoverflow.com/a/16068840/948404
+     */
     private function setupCron () {
 
         if (!$this->io->confirm('Do you want help setting up cron?', true)) {

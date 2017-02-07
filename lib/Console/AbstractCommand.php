@@ -5,6 +5,7 @@ namespace NielsHoppe\RDFDAV\Console;
 use NielsHoppe\RDFDAV\Config;
 use NielsHoppe\RDFDAV\Importer;
 use NielsHoppe\RDFDAV\ARC\StoreManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,9 +29,6 @@ abstract class AbstractCommand extends Command {
      * @var
      */
     protected $io;
-
-    #protected abstract function configure ();
-    #protected abstract function execute (InputInterface $input, OutputInterface $output);
 
     protected function setup (InputInterface $input, OutputInterface $output) {
 

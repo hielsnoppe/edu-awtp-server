@@ -16,16 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
-class SetupCommand extends Command {
-
-    /**
-     * @var
-     */
-    private $config;
-    /**
-     * @var LoggerInterface
-     */
-    private $log;
+class TestCommand extends AbstractCommand {
 
     protected function configure () {
 
@@ -37,10 +28,7 @@ class SetupCommand extends Command {
 
     protected function execute (InputInterface $input, OutputInterface $output) {
 
-        $this->input = $input;
-        $this->output = $output;
-        $this->log = new ConsoleLogger($output);
-        $this->config = Config::getInstance();
+        $this->setup($input, $output);
 
         $this->log->emergency('Test');
         $this->log->alert('Test');
@@ -50,11 +38,6 @@ class SetupCommand extends Command {
         $this->log->notice('Test');
         $this->log->info('Test');
         $this->log->debug('Test');
-
-        $config = json_decode(file_get_contents('../config.json'), true);
-        $this->config->setAll($config);
-
-        $this->log->info('Setup completed.');
 
         $builder = new MappingQueryBuilder([
             "vcard" => [

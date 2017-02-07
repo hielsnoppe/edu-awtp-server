@@ -55,7 +55,7 @@ class SetupCommand extends AbstractCommand {
 
     private function setupConfig () {
 
-        if (!$this->io->confim('Do you want to create a config.json now?', false)) {
+        if (!$this->io->confirm('Do you want to create a config.json now?', false)) {
 
             return false;
         }

@@ -23,10 +23,13 @@ $config = array_merge($config->getAll([
     'endpoint_max_limit' => 250, /* optional */
 ]);
 
-/* instantiation */
+// instantiation
 $ep = \ARC2::getStoreEndpoint($config);
 
-if (!$ep->isSetUp()) $ep->setUp(); /* create MySQL tables */
+if (!$ep->isSetUp()) {
+
+    $ep->setUp(); // create MySQL tables
+}
 
 /* request handling */
 $ep->handleRequest();

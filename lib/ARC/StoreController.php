@@ -21,7 +21,7 @@ class StoreController {
      */
     private $store;
 
-    public function __construct(ARC2_Store $store) {
+    public function __construct (ARC2_Store $store) {
 
         $this->store = $store;
     }
@@ -29,7 +29,7 @@ class StoreController {
     /**
      * @todo Filter by URIs
      */
-    public function getCards($cardUris = []) {
+    public function getCards ($cardUris = []) {
 
         $query = Constants::SPARQL_ALL_VCARDS;
 
@@ -39,7 +39,7 @@ class StoreController {
     /**
      * @todo Refactor
      */
-    public function getCard($cardUri) {
+    public function getCard ($cardUri) {
 
         $query = Constants::SPARQL_PREFIXES . <<<SPARQL
 CONSTRUCT {

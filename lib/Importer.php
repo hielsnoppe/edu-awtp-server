@@ -5,7 +5,6 @@ namespace NielsHoppe\RDFDAV;
 use NielsHoppe\RDFDAV\ARC\StoreController;
 use NielsHoppe\RDFDAV\SPARQL\Reasoner;
 use Psr\Log\LoggerInterface;
-use Sabre\DAV;
 
 class Importer {
 

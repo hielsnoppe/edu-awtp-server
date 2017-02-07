@@ -67,7 +67,7 @@ class Server {
         $this->sabre->addPlugin(new \Sabre\DAV\Browser\Plugin());
     }
 
-    public function exec() {
+    public function exec () {
 
         $this->sabre->exec();
     }

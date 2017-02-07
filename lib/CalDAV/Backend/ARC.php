@@ -6,12 +6,9 @@ use Sabre\CalDAV;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Backend\SyncSupport;
 use Sabre\CalDAV\Backend\SubscriptionSupport;
-use Sabre\CalDAV\Backend\SchedulingSupport;
-use Sabre\CalDAV\Backend\SharingSupport;
 use Sabre\DAV;
 use Sabre\DAV\Exception\Forbidden;
 use Sabre\VObject;
-use Sabre\DAV\Xml\Element\Sharee;
 
 /**
  * ARC2 CalDAV backend

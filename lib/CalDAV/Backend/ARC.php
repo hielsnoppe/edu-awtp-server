@@ -124,7 +124,7 @@ class ARC extends AbstractBackend implements
      *
      * @param \PDO $pdo
      */
-    function __construct(\PDO $pdo) {
+    function __construct (\PDO $pdo) {
 
         $this->pdo = $pdo;
 
@@ -154,7 +154,7 @@ class ARC extends AbstractBackend implements
      * @param string $principalUri
      * @return array
      */
-    function getCalendarsForUser($principalUri) {
+    function getCalendarsForUser ($principalUri) {
 
         $fields = array_values($this->propertyMap);
         $fields[] = 'calendarid';
@@ -185,7 +185,7 @@ SQL
             }
 
             $calendar = [
-                'id'                                                                 => [(int)$row['calendarid'], (int)$row['id']],
+                'id'                                                                 => [(int) $row['calendarid'], (int) $row['id']],
                 'uri'                                                                => $row['uri'],
                 'principaluri'                                                       => $row['principaluri'],
                 '{' . CalDAV\Plugin::NS_CALENDARSERVER . '}getctag'                  => 'http://sabre.io/ns/sync/' . ($row['synctoken'] ? $row['synctoken'] : '0'),
@@ -195,7 +195,7 @@ SQL
                 'share-resource-uri'                                                 => '/ns/share/' . $row['calendarid'],
             ];
 
-            $calendar['share-access'] = (int)$row['access'];
+            $calendar['share-access'] = (int) $row['access'];
             // 1 = owner, 2 = readonly, 3 = readwrite
             if ($row['access'] > 1) {
                 // We need to find more information about the original owner.
@@ -204,7 +204,7 @@ SQL
 
                 // read-only is for backwards compatbility. Might go away in
                 // the future.
-                $calendar['read-only'] = (int)$row['access'] === \Sabre\DAV\Sharing\Plugin::ACCESS_READ;
+                $calendar['read-only'] = (int) $row['access'] === \Sabre\DAV\Sharing\Plugin::ACCESS_READ;
             }
 
             foreach ($this->propertyMap as $xmlName => $dbName) {
@@ -230,7 +230,7 @@ SQL
      * @param array $properties
      * @return string
      */
-    function createCalendar($principalUri, $calendarUri, array $properties) {
+    function createCalendar ($principalUri, $calendarUri, array $properties) {
 
         $fieldNames = [
             'principaluri',
@@ -303,7 +303,7 @@ SQL
      * @param \Sabre\DAV\PropPatch $propPatch
      * @return void
      */
-    function updateCalendar($calendarId, \Sabre\DAV\PropPatch $propPatch) {
+    function updateCalendar ($calendarId, \Sabre\DAV\PropPatch $propPatch) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -313,7 +313,7 @@ SQL
         $supportedProperties = array_keys($this->propertyMap);
         $supportedProperties[] = '{' . CalDAV\Plugin::NS_CALDAV . '}schedule-calendar-transp';
 
-        $propPatch->handle($supportedProperties, function($mutations) use ($calendarId, $instanceId) {
+        $propPatch->handle($supportedProperties, function ($mutations) use ($calendarId, $instanceId) {
             $newValues = [];
             foreach ($mutations as $propertyName => $propertyValue) {
 
@@ -352,7 +352,7 @@ SQL
      * @param mixed $calendarId
      * @return void
      */
-    function deleteCalendar($calendarId) {
+    function deleteCalendar ($calendarId) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -361,7 +361,7 @@ SQL
 
         $stmt = $this->pdo->prepare('SELECT access FROM ' . $this->calendarInstancesTableName . ' where id = ?');
         $stmt->execute([$instanceId]);
-        $access = (int)$stmt->fetchColumn();
+        $access = (int) $stmt->fetchColumn();
 
         if ($access === \Sabre\DAV\Sharing\Plugin::ACCESS_SHAREDOWNER) {
 
@@ -426,7 +426,7 @@ SQL
      * @param mixed $calendarId
      * @return array
      */
-    function getCalendarObjects($calendarId) {
+    function getCalendarObjects ($calendarId) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -441,9 +441,9 @@ SQL
             $result[] = [
                 'id'           => $row['id'],
                 'uri'          => $row['uri'],
-                'lastmodified' => (int)$row['lastmodified'],
+                'lastmodified' => (int) $row['lastmodified'],
                 'etag'         => '"' . $row['etag'] . '"',
-                'size'         => (int)$row['size'],
+                'size'         => (int) $row['size'],
                 'component'    => strtolower($row['componenttype']),
             ];
         }
@@ -468,7 +468,7 @@ SQL
      * @param string $objectUri
      * @return array|null
      */
-    function getCalendarObject($calendarId, $objectUri) {
+    function getCalendarObject ($calendarId, $objectUri) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -484,9 +484,9 @@ SQL
         return [
             'id'            => $row['id'],
             'uri'           => $row['uri'],
-            'lastmodified'  => (int)$row['lastmodified'],
+            'lastmodified'  => (int) $row['lastmodified'],
             'etag'          => '"' . $row['etag'] . '"',
-            'size'          => (int)$row['size'],
+            'size'          => (int) $row['size'],
             'calendardata'  => $row['calendardata'],
             'component'     => strtolower($row['componenttype']),
          ];
@@ -505,7 +505,7 @@ SQL
      * @param array $uris
      * @return array
      */
-    function getMultipleCalendarObjects($calendarId, array $uris) {
+    function getMultipleCalendarObjects ($calendarId, array $uris) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -526,9 +526,9 @@ SQL
             $result[] = [
                 'id'           => $row['id'],
                 'uri'          => $row['uri'],
-                'lastmodified' => (int)$row['lastmodified'],
+                'lastmodified' => (int) $row['lastmodified'],
                 'etag'         => '"' . $row['etag'] . '"',
-                'size'         => (int)$row['size'],
+                'size'         => (int) $row['size'],
                 'calendardata' => $row['calendardata'],
                 'component'    => strtolower($row['componenttype']),
             ];
@@ -557,7 +557,7 @@ SQL
      * @param string $calendarData
      * @return string|null
      */
-    function createCalendarObject($calendarId, $objectUri, $calendarData) {
+    function createCalendarObject ($calendarId, $objectUri, $calendarData) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -603,7 +603,7 @@ SQL
      * @param string $calendarData
      * @return string|null
      */
-    function updateCalendarObject($calendarId, $objectUri, $calendarData) {
+    function updateCalendarObject ($calendarId, $objectUri, $calendarData) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -636,7 +636,7 @@ SQL
      * @param string $calendarData
      * @return array
      */
-    protected function getDenormalizedData($calendarData) {
+    protected function getDenormalizedData ($calendarData) {
 
         $vObject = VObject\Reader::read($calendarData);
         $componentType = null;
@@ -647,7 +647,7 @@ SQL
         foreach ($vObject->getComponents() as $component) {
             if ($component->name !== 'VTIMEZONE') {
                 $componentType = $component->name;
-                $uid = (string)$component->UID;
+                $uid = (string) $component->UID;
                 break;
             }
         }
@@ -672,7 +672,7 @@ SQL
                     $lastOccurence = $firstOccurence;
                 }
             } else {
-                $it = new VObject\Recur\EventIterator($vObject, (string)$component->UID);
+                $it = new VObject\Recur\EventIterator($vObject, (string) $component->UID);
                 $maxDate = new \DateTime(self::MAX_DATE);
                 if ($it->isInfinite()) {
                     $lastOccurence = $maxDate->getTimeStamp();
@@ -716,7 +716,7 @@ SQL
      * @param string $objectUri
      * @return void
      */
-    function deleteCalendarObject($calendarId, $objectUri) {
+    function deleteCalendarObject ($calendarId, $objectUri) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -782,7 +782,7 @@ SQL
      * @param array $filters
      * @return array
      */
-    function calendarQuery($calendarId, array $filters) {
+    function calendarQuery ($calendarId, array $filters) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -880,7 +880,7 @@ SQL
      * @param string $uid
      * @return string|null
      */
-    function getCalendarObjectByUID($principalUri, $uid) {
+    function getCalendarObjectByUID ($principalUri, $uid) {
 
         $query = <<<SQL
 SELECT
@@ -961,7 +961,7 @@ SQL;
      * @param int $limit
      * @return array
      */
-    function getChangesForCalendar($calendarId, $syncToken, $syncLevel, $limit = null) {
+    function getChangesForCalendar ($calendarId, $syncToken, $syncLevel, $limit = null) {
 
         if (!is_array($calendarId)) {
             throw new \InvalidArgumentException('The value passed to $calendarId is expected to be an array with a calendarId and an instanceId');
@@ -970,7 +970,7 @@ SQL;
 
         // Current synctoken
         $stmt = $this->pdo->prepare('SELECT synctoken FROM ' . $this->calendarTableName . ' WHERE id = ?');
-        $stmt->execute([ $calendarId ]);
+        $stmt->execute([$calendarId]);
         $currentToken = $stmt->fetchColumn(0);
 
         if (is_null($currentToken)) return null;
@@ -985,7 +985,7 @@ SQL;
         if ($syncToken) {
 
             $query = "SELECT uri, operation FROM " . $this->calendarChangesTableName . " WHERE synctoken >= ? AND synctoken < ? AND calendarid = ? ORDER BY synctoken";
-            if ($limit > 0) $query .= " LIMIT " . (int)$limit;
+            if ($limit > 0) $query .= " LIMIT " . (int) $limit;
 
             // Fetching all changes
             $stmt = $this->pdo->prepare($query);
@@ -1036,7 +1036,7 @@ SQL;
      * @param int $operation 1 = add, 2 = modify, 3 = delete.
      * @return void
      */
-    protected function addChange($calendarId, $objectUri, $operation) {
+    protected function addChange ($calendarId, $objectUri, $operation) {
 
         $stmt = $this->pdo->prepare('INSERT INTO ' . $this->calendarChangesTableName . ' (uri, synctoken, calendarid, operation) SELECT ?, synctoken, ?, ? FROM ' . $this->calendarTableName . ' WHERE id = ?');
         $stmt->execute([
@@ -1083,7 +1083,7 @@ SQL;
      * @param string $principalUri
      * @return array
      */
-    function getSubscriptionsForUser($principalUri) {
+    function getSubscriptionsForUser ($principalUri) {
 
         $fields = array_values($this->subscriptionPropertyMap);
         $fields[] = 'id';
@@ -1135,7 +1135,7 @@ SQL;
      * @param array $properties
      * @return mixed
      */
-    function createSubscription($principalUri, $uri, array $properties) {
+    function createSubscription ($principalUri, $uri, array $properties) {
 
         $fieldNames = [
             'principaluri',
@@ -1188,12 +1188,12 @@ SQL;
      * @param \Sabre\DAV\PropPatch $propPatch
      * @return void
      */
-    function updateSubscription($subscriptionId, DAV\PropPatch $propPatch) {
+    function updateSubscription ($subscriptionId, DAV\PropPatch $propPatch) {
 
         $supportedProperties = array_keys($this->subscriptionPropertyMap);
         $supportedProperties[] = '{http://calendarserver.org/ns/}source';
 
-        $propPatch->handle($supportedProperties, function($mutations) use ($subscriptionId) {
+        $propPatch->handle($supportedProperties, function ($mutations) use ($subscriptionId) {
 
             $newValues = [];
 
@@ -1231,7 +1231,7 @@ SQL;
      * @param mixed $subscriptionId
      * @return void
      */
-    function deleteSubscription($subscriptionId) {
+    function deleteSubscription ($subscriptionId) {
 
         $stmt = $this->pdo->prepare('DELETE FROM ' . $this->calendarSubscriptionsTableName . ' WHERE id = ?');
         $stmt->execute([$subscriptionId]);

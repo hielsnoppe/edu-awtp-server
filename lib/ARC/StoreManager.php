@@ -19,6 +19,9 @@ class StoreManager {
      */
     private $pdo;
 
+    /**
+     * @param \Sabre\CardDAV\Backend\PDO $pdo
+     */
     public function __construct ($pdo, array $config) {
 
         $this->config = $config;

@@ -92,8 +92,7 @@ class SetupCommand extends AbstractCommand {
         $config['db_pwd'] = $this->io->askHidden('Database password',
                 function ($password) {
                     return empty($password) ?
-                        Config::DEFAULT_VALUES['db_pwd'] :
-                        $password;
+                        Config::DEFAULT_VALUES['db_pwd'] : $password;
                 });
 
         $config['sabre_base_uri'] = $this->io->ask('Sabre base URI',

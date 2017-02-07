@@ -95,9 +95,17 @@ class Reasoner {
                 $object = $row['o'];
 
                 switch ($row['o type']) {
-                    case 'uri': $object = '<' . $object . '>'; break;
-                    case 'literal': $object = '"' . $object . '"'; break;
-                    default: break; // must not happen
+                    
+                case 'uri':
+                    $object = '<' . $object . '>';
+                    break;
+
+                case 'literal':
+                    $object = '"' . $object . '"';
+                    break;
+
+                default:
+                    break; // must not happen
                 }
 
                 $triples[] = [$subject, $predicate, $object];

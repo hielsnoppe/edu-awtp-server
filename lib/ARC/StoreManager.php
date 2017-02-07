@@ -22,13 +22,16 @@ class StoreManager {
     /**
      * @param \PDO $pdo
      */
-    public function __construct ($pdo, array $config) {
+    public function __construct (\PDO $pdo, array $config) {
 
         $this->config = $config;
         $this->pdo = $pdo;
     }
 
     /**
+     * @todo
+     * @param string $principalUri
+     * @return \ARC2_Store
      */
     public function getStore ($principalUri) {
 
@@ -44,7 +47,10 @@ class StoreManager {
 
         $store = \ARC2::getStore($config);
 
-        if (!$store->isSetUp()) $store->setUp();
+        if (!$store->isSetUp()) {
+
+            $store->setUp();
+        }
 
         return $store;
     }

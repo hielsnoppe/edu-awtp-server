@@ -44,7 +44,7 @@ class ARC extends PDO implements SyncSupport {
         parent::__construct($pdo);
 
         $this->config = $config;
-        $this->storemanager = new StoreManager($this->pdo, $config);
+        $this->storemanager = new StoreManager($pdo, $config);
     }
 
     private function getPrincipalForAddressBook ($addressbookId) {

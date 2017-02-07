@@ -31,7 +31,8 @@ if (!$ep->isSetUp()) {
     $ep->setUp(); // create MySQL tables
 }
 
-/* request handling */
+// request handling
 $ep->handleRequest();
 $ep->sendHeaders();
+
 echo $ep->getResult();

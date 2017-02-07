@@ -79,5 +79,5 @@ class VCardBuilder {
         }
     }
 
-    public function getCard() { return $this->card; }
+    public function getCard () { return $this->card; }
 }

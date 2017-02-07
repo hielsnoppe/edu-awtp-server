@@ -2,16 +2,13 @@
 
 namespace NielsHoppe\RDFDAV\CardDAV\Backend;
 
-use Asparagus\QueryBuilder;
 use NielsHoppe\RDFDAV\ARC\StoreManager;
 use NielsHoppe\RDFDAV\ARC\StoreController;
 use NielsHoppe\RDFDAV\CardDAV\VCardBuilder;
 use NielsHoppe\RDFDAV\Constants;
-use NielsHoppe\RDFDAV\SPARQL\MappingQueryBuilder;
 use Sabre\CardDAV;
 use Sabre\CardDAV\Backend\PDO;
 use Sabre\CardDAV\Backend\SyncSupport;
-use Sabre\CardDAV\Backend\AbstractBackend;
 use Sabre\DAV;
 
 /**
@@ -42,7 +39,7 @@ class ARC extends PDO implements SyncSupport {
      * @param \PDO $pdo
      * @param array $config Configuration for ARC2
      */
-    public function __construct(\PDO $pdo, array $config) {
+    public function __construct (\PDO $pdo, array $config) {
 
         parent::__construct($pdo);
 
@@ -50,7 +47,7 @@ class ARC extends PDO implements SyncSupport {
         $this->storemanager = new StoreManager($this->pdo, $config);
     }
 
-    private function getPrincipalForAddressBook($addressbookId) {
+    private function getPrincipalForAddressBook ($addressbookId) {
 
         $principalUri = null;
 
@@ -70,7 +67,7 @@ class ARC extends PDO implements SyncSupport {
         return $principalUri;
     }
 
-    private function getStoreForAddressBook($addressbookId) {
+    private function getStoreForAddressBook ($addressbookId) {
 
         $principal = $this->getPrincipalForAddressBook($addressbookId);
         $store = $this->storemanager->getStore($principal);
@@ -172,7 +169,7 @@ class ARC extends PDO implements SyncSupport {
      * @param mixed $addressbookId
      * @return array
      */
-    public function getCards($addressbookId) {
+    public function getCards ($addressbookId) {
 
         $result = [];
         $store = $this->getStoreForAddressBook($addressbookId);
@@ -224,7 +221,7 @@ class ARC extends PDO implements SyncSupport {
      * @param string $cardUri
      * @return array
      */
-    public function getCard($addressbookId, $cardUri) {
+    public function getCard ($addressbookId, $cardUri) {
 
         $result = false;
         $store = $this->getStoreForAddressbook($addressbookId);
@@ -272,7 +269,7 @@ class ARC extends PDO implements SyncSupport {
      * @param array $uris
      * @return array
      */
-    public function getMultipleCards($addressbookId, array $uris) {
+    public function getMultipleCards ($addressbookId, array $uris) {
 
         $query = 'SELECT id, uri, lastmodified, etag, size, carddata FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri IN (';
         // Inserting a whole bunch of question marks
@@ -284,7 +281,7 @@ class ARC extends PDO implements SyncSupport {
         $result = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $row['etag'] = '"' . $row['etag'] . '"';
-            $row['lastmodified'] = (int)$row['lastmodified'];
+            $row['lastmodified'] = (int) $row['lastmodified'];
             $result[] = $row;
         }
         return $result;
@@ -316,7 +313,7 @@ class ARC extends PDO implements SyncSupport {
      * @param string $cardData
      * @return string|null
      */
-    public function createCard($addressbookId, $cardUri, $cardData) {
+    public function createCard ($addressbookId, $cardUri, $cardData) {
 
         $stmt = $this->pdo->prepare('INSERT INTO ' . $this->cardsTableName . ' (carddata, uri, lastmodified, addressbookid, size, etag) VALUES (?, ?, ?, ?, ?, ?)');
 
@@ -362,7 +359,7 @@ class ARC extends PDO implements SyncSupport {
      * @param string $cardData
      * @return string|null
      */
-    public function updateCard($addressbookId, $cardUri, $cardData) {
+    public function updateCard ($addressbookId, $cardUri, $cardData) {
 
         $stmt = $this->pdo->prepare('UPDATE ' . $this->cardsTableName . ' SET carddata = ?, lastmodified = ?, size = ?, etag = ? WHERE uri = ? AND addressbookid =?');
 
@@ -389,7 +386,7 @@ class ARC extends PDO implements SyncSupport {
      * @param string $cardUri
      * @return bool
      */
-    public function deleteCard($addressbookId, $cardUri) {
+    public function deleteCard ($addressbookId, $cardUri) {
 
         $stmt = $this->pdo->prepare('DELETE FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri = ?');
         $stmt->execute([$addressbookId, $cardUri]);

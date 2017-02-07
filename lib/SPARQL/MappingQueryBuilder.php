@@ -73,7 +73,7 @@ class MappingQueryBuilder {
                 ;
     }
 
-    public function getQuery($source, $target) {
+    public function getQuery ($source, $target) {
 
         list($sourcePrefix, $sourceType) = explode(":", $source);
         list($targetPrefix, $targetType) = explode(":", $target);

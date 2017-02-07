@@ -19,7 +19,7 @@ class StoreManager {
      */
     private $pdo;
 
-    public function __construct($pdo, array $config) {
+    public function __construct ($pdo, array $config) {
 
         $this->config = $config;
         $this->pdo = $pdo;
@@ -27,7 +27,7 @@ class StoreManager {
 
     /**
      */
-    public function getStore($principalUri) {
+    public function getStore ($principalUri) {
 
         $storeName = "test"; // XXX Override for testing
 

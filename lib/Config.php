@@ -20,10 +20,10 @@ class Config {
 
     private $values = [];
 
-    private function __construct() {
+    private function __construct () {
     }
 
-    public static function getInstance() {
+    public static function getInstance () {
 
         if (is_null(self::$instance)) {
 
@@ -33,7 +33,7 @@ class Config {
         return self::$instance;
     }
 
-    public function get($key, $default = true) {
+    public function get ($key, $default = true) {
 
         if (array_key_exists($key, $this->values)) {
 
@@ -46,7 +46,7 @@ class Config {
         else return null;
     }
 
-    public function getAll(array $keys, $defaults = true) {
+    public function getAll (array $keys, $defaults = true) {
 
         if (!is_array($keys)) return array();
 
@@ -57,19 +57,19 @@ class Config {
             $values = Functions::array_extract(self::$defaults, $keys);
         }
 
-        $values = array_merge( $values,
+        $values = array_merge($values,
             Functions::array_extract($this->values, $keys)
         );
 
         return $values;
     }
 
-    public function set($key, $value) {
+    public function set ($key, $value) {
 
         $this->values[$key] = $value;
     }
 
-    public function setAll(array $values) {
+    public function setAll (array $values) {
 
         foreach ($values as $key => $value) {
 
@@ -80,7 +80,7 @@ class Config {
     /**
      * @todo A lot
      */
-    public function setFromFile($filename) {
+    public function setFromFile ($filename) {
 
         parse_ini_file($filename, true);
     }

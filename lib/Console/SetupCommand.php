@@ -2,11 +2,7 @@
 
 namespace NielsHoppe\RDFDAV\Console;
 
-use NielsHoppe\RDFDAV\Config;
-use NielsHoppe\RDFDAV\Importer;
-use NielsHoppe\RDFDAV\ARC\StoreManager;
 use NielsHoppe\RDFDAV\Console\AbstractCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

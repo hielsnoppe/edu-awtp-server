@@ -54,13 +54,13 @@ class SetupCommand extends AbstractCommand {
 
     private function testConfig () {
 
-        if (!file_exists('../config.json')) {
+        if (!file_exists(Config::DEFAULT_CONFIG_LOCATION)) {
 
             $this->io->text('No configuration file found.');
             return false;
         }
 
-        $config = json_decode(file_get_contents('../config.json'), true);
+        $config = json_decode(file_get_contents(Config::DEFAULT_CONFIG_LOCATION), true);
 
         if (!is_array($config)) {
 
@@ -68,7 +68,7 @@ class SetupCommand extends AbstractCommand {
             return false;
         }
 
-        Config::getInstance()->setAll($config);
+        Config::getInstance()->setFromFile();
         $this->io->text('Found a valid configuration file.');
         return true;
     }
@@ -186,8 +186,6 @@ class SetupCommand extends AbstractCommand {
             return false;
         }
 
-        $bin = realpath(__DIR__ . '/../../console.php');
-
         $interval = $this->io->choice('How often do you want the import to run?', [
             #'reboot' => 'Run once, at startup.',
             #'yearly' => 'Run once a year (0 0 1 1 *)',
@@ -199,8 +197,12 @@ class SetupCommand extends AbstractCommand {
             'hourly' => 'Run once an hour (0 * * * *)',
         ]);
 
+        $php = '/usr/bin/php';
+        $bin = realpath(__DIR__ . '/../../console.php');
+        $log = realpath(__DIR__ . '/../../../') . '/import.log';
+
         $this->io->text('Please copy and paste the following into your crontab editor:');
-        $this->io->codeblock(sprintf('@%s php %s import -q', $interval, $bin), '$ crontab -e');
+        $this->io->codeblock(sprintf('@%s %s %s import -vv >> %s 2>&1', $interval, $php, $bin, $log), '$ crontab -e');
 
         $this->io->text('Completed crontab setup.');
         return true;

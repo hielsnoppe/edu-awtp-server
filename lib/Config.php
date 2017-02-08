@@ -83,7 +83,20 @@ class Config {
      */
     public function setFromFile ($filename = self::DEFAULT_CONFIG_LOCATION) {
 
+        if (!file_exists($filename)) {
+
+            return false;
+        }
+
         $config = json_decode(file_get_contents($filename), true);
+
+        if (!is_array($config)) {
+
+            return false;
+        }
+
         $this->setAll($config);
+
+        return true;
     }
 }

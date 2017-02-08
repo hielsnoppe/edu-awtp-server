@@ -24,9 +24,7 @@ class ImportCommand extends AbstractCommand {
 
         $this->setup($input, $output);
 
-        $config = json_decode(file_get_contents('../config.json'), true);
-
-        $importer = new Importer($config, $this->log);
+        $importer = new Importer($this->log);
 
         $sources = [
             [

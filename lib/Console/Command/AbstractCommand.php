@@ -13,10 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractCommand extends Command {
 
     /**
-     * @var
-     */
-    protected $config;
-    /**
      * @var LoggerInterface
      */
     protected $log;
@@ -29,9 +25,6 @@ abstract class AbstractCommand extends Command {
 
         $this->io = new AppStyle($input, $output);
         $this->log = new ConsoleLogger($output);
-        $this->config = Config::getInstance();
-
-        $config = json_decode(file_get_contents('../config.json'), true);
-        $this->config->setAll($config);
+        Config::getInstance()->setFromFile();
     }
 }

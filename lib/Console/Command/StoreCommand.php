@@ -2,6 +2,7 @@
 
 namespace NielsHoppe\RDFDAV\Console\Command;
 
+use NielsHoppe\RDFDAV\Config;
 use NielsHoppe\RDFDAV\Console\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -26,7 +27,7 @@ class StoreCommand extends AbstractCommand {
 
         $this->setup($input, $output);
 
-        $arcConfig = $this->config->getAll([
+        $arcConfig = Config::getInstance()->getAll([
             "db_host", "db_name", "db_user", "db_pwd"
         ]);
         $arcConfig["store_name"] = $input->getOption('store');

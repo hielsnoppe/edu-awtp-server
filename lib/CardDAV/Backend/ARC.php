@@ -23,12 +23,6 @@ use Sabre\DAV;
 class ARC extends PDO implements SyncSupport {
 
     /**
-     * ARC configuration
-     *
-     * @var mixed[]
-     */
-    protected $config;
-    /**
      * @var StoreManager $storemanager Store manager
      */
     protected $storemanager;
@@ -43,7 +37,6 @@ class ARC extends PDO implements SyncSupport {
 
         parent::__construct($pdo);
 
-        $this->config = $config;
         $this->storemanager = new StoreManager($pdo, $config);
     }
 

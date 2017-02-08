@@ -68,7 +68,7 @@ class SetupCommand extends AbstractCommand {
             return false;
         }
 
-        $this->config->setAll($config);
+        Config::getInstance()->setAll($config);
         $this->io->text('Found a valid configuration file.');
         return true;
     }
@@ -139,11 +139,13 @@ class SetupCommand extends AbstractCommand {
             return false;
         }
 
+        $config = Config::getInstance();
+
         $pdo = new \PDO(sprintf("mysql:host=%s;dbname=%s",
-            $this->config->get("db_host"),
-            $this->config->get("db_name")),
-            $this->config->get("db_user"),
-            $this->config->get("db_pwd")
+            $config->get("db_host"),
+            $config->get("db_name")),
+            $config->get("db_user"),
+            $config->get("db_pwd")
         );
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 

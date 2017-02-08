@@ -7,28 +7,24 @@ use Sabre\DAV;
 class Server {
 
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var \Sabre\DAV\Server
      */
     private $sabre;
 
-    public function __construct ($config) {
+    public function __construct () {
 
-        $this->config = Config::getInstance();
-        $this->config->setAll($config);
+        $config = Config::getInstance();
+        $config->setFromFile();
 
         $pdo = new \PDO(sprintf("mysql:host=%s;dbname=%s",
-            $this->config->get("db_host"),
-            $this->config->get("db_name")),
-            $this->config->get("db_user"),
-            $this->config->get("db_pwd")
+            $config->get("db_host"),
+            $config->get("db_name")),
+            $config->get("db_user"),
+            $config->get("db_pwd")
         );
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $arcConfig = $this->config->getAll([
+        $arcConfig = $config->getAll([
             "db_host", "db_name", "db_user", "db_pwd"
         ]);
 
@@ -51,11 +47,11 @@ class Server {
         // You are highly encouraged to set your WebDAV server base url. Without it,
         // SabreDAV will guess, but the guess is not always correct. Putting the
         // server on the root of the domain will improve compatibility.
-        $this->sabre->setBaseUri($this->config->get("sabre_base_uri"));
+        $this->sabre->setBaseUri($config->get("sabre_base_uri"));
 
         // Authentication plugin
         $this->sabre->addPlugin(new \Sabre\DAV\Auth\Plugin($authBackend,
-                $this->config->get("sabre_auth_realm")));
+                $config->get("sabre_auth_realm")));
 
         // CalDAV plugin
         #$this->sabreServer->addPlugin(new CalDAV\Plugin());

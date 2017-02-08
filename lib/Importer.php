@@ -9,10 +9,6 @@ use Psr\Log\LoggerInterface;
 class Importer {
 
     /**
-     * @var Config
-     */
-    private $config;
-    /**
      * @var \ARC2_Store
      */
     private $store;
@@ -21,14 +17,11 @@ class Importer {
      */
     private $log;
 
-    public function __construct ($config, LoggerInterface $log) {
+    public function __construct (LoggerInterface $log) {
 
         $this->log = $log;
 
-        $this->config = Config::getInstance();
-        $this->config->setAll($config);
-
-        $arcConfig = $this->config->getAll([
+        $arcConfig = Config::getInstance()->getAll([
             "db_host", "db_name", "db_user", "db_pwd"
         ]);
         $arcConfig["store_name"] = "test";
@@ -52,7 +45,7 @@ class Importer {
 
     public function process () {
 
-        $graph = $this->config->get('dev_graph_name');
+        $graph = Config::getInstance()->get('dev_graph_name');
 
         $controller = new StoreController($this->store);
         $reasoner = new Reasoner($this->store);

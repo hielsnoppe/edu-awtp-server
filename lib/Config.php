@@ -4,6 +4,8 @@ namespace NielsHoppe\RDFDAV;
 
 class Config {
 
+    const DEFAULT_CONFIG_LOCATION = __DIR__ . '/../config.json';
+
     const DEFAULT_VALUES = [
         "db_host" => "127.0.0.1",
         "db_name" => "scotchbox",
@@ -78,10 +80,10 @@ class Config {
     }
 
     /**
-     * @todo A lot
      */
-    public function setFromFile ($filename) {
+    public function setFromFile ($filename = self::DEFAULT_CONFIG_LOCATION) {
 
-        parse_ini_file($filename, true);
+        $config = json_decode(file_get_contents($filename), true);
+        $this->setAll($config);
     }
 }

@@ -198,8 +198,8 @@ class SetupCommand extends AbstractCommand {
         ]);
 
         $php = '/usr/bin/php';
-        $bin = realpath(__DIR__ . '/../../console.php');
-        $log = realpath(__DIR__ . '/../../../') . '/import.log';
+        $bin = realpath(__DIR__ . '/../../../app/console.php');
+        $log = realpath(__DIR__ . '/../../../') . '/var/import.log';
 
         $this->io->text('Please copy and paste the following into your crontab editor:');
         $this->io->codeblock(sprintf('@%s %s %s import -vv >> %s 2>&1', $interval, $php, $bin, $log), '$ crontab -e');

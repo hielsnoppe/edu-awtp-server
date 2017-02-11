@@ -121,8 +121,10 @@ class SetupCommand extends AbstractCommand {
         if (true) {
 
             #$this->io->text('Required tables not found.');
-            $this->io->text('Testing the database scheme is not implemented, yet.' . "\n" .
-                    'Currently you need to know by yourself, whether or not you have set up the database before.');
+            $this->io->text([
+                'Testing the database scheme is not implemented, yet.',
+                'Currently you need to know by yourself, whether or not you have set up the database before.'
+            ]);
             return false;
         }
 
@@ -151,11 +153,12 @@ class SetupCommand extends AbstractCommand {
         );
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $files = glob('../vendor/sabre/dav/examples/sql/mysql.*.sql');
-        $files[] = '../res/sql/setup.sql';
+        $files = glob(__DIR__ . '/../../../vendor/sabre/dav/examples/sql/mysql.*.sql');
+        $files[] = __DIR__ . '/../../../res/sql/setup.sql';
 
         foreach ($files as $file) {
 
+            $file = realpath($file);
             #$success = $pdo->query(file_get_contents($file));
             $success = true;
 
@@ -171,6 +174,8 @@ class SetupCommand extends AbstractCommand {
                 ]);
             }
         }
+
+        $this->io->newLine();
 
         $this->io->text('Completed database setup.');
         return true;

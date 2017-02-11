@@ -118,9 +118,11 @@ class SetupCommand extends AbstractCommand {
      */
     private function testDatabase () {
 
-        if (!true) {
+        if (true) {
 
-            $this->io->text('Required tables not found.');
+            #$this->io->text('Required tables not found.');
+            $this->io->text('Testing the database scheme is not implemented, yet.' . "\n" .
+                    'Currently you need to know by yourself, whether or not you have set up the database before.');
             return false;
         }
 

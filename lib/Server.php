@@ -33,6 +33,7 @@ class Server {
         $principalBackend = new \Sabre\DAVACL\PrincipalBackend\PDO($pdo);
         #$calendarBackend = new CalDAV\Backend\ARC($this->arc);
         $carddavBackend = new CardDAV\Backend\ARC($pdo, $arcConfig);
+        #$carddavBackend = new \Sabre\CardDAV\Backend\PDO($pdo);
 
         // Directory tree
         $tree = array(

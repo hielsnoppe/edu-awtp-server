@@ -164,6 +164,16 @@ class ARC extends PDO implements SyncSupport {
      */
     public function getCards ($addressbookId) {
 
+        /*
+        $stmt = $this->pdo->prepare('SELECT uri FROM addressbooks WHERE id = ?');
+        $stmt->execute([$addressbookId]);
+
+        $result = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $addressbookUri = $row['uri'];
+        }
+        */
+
         $result = [];
         $store = $this->getStoreForAddressBook($addressbookId);
         $controller = new StoreController($store);
@@ -175,31 +185,20 @@ class ARC extends PDO implements SyncSupport {
             $builder = new VCardBuilder();
             $builder->readFromRDF($data);
 
-            $uri = 'ERROR';
-            if (array_key_exists(Constants::NS_APP . 'id', $data)) {
+            if (!array_key_exists(Constants::NS_APP . 'id', $data)) {
 
-                $uri = $data[Constants::NS_APP . 'id'][0]['value'];
+                continue;
             }
 
             // id, uri, lastmodified, etag, size, carddata
             $result[] = [
-                'uri' => $uri,
-                'carddata' => $builder->getCard()->serialize()
+                'uri' => $data[Constants::NS_APP . 'id'][0]['value'],
+                'carddata' => $builder->getCard()->serialize(),
+                'lastmodified' => time()
             ];
         }
 
         return $result;
-        /*
-        $stmt = $this->pdo->prepare('SELECT id, uri, lastmodified, etag, size FROM ' . $this->cardsTableName . ' WHERE addressbookid = ?');
-        $stmt->execute([$addressbookId]);
-
-        $result = [];
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $row['etag'] = '"' . $row['etag'] . '"';
-            $row['lastmodified'] = (int)$row['lastmodified'];
-            $result[] = $row;
-        }
-        */
     }
 
     /**
@@ -227,10 +226,16 @@ class ARC extends PDO implements SyncSupport {
             $builder = new VCardBuilder();
             $builder->readFromRDF($data);
 
+            if (!array_key_exists(Constants::NS_APP . 'id', $data)) {
+
+                return false;
+            }
+
             // id, uri, lastmodified, etag, size, carddata
             $result = [
-                "uri" => md5($uri),
-                "carddata" => $builder->getCard()->serialize()
+                "uri" => $data[Constants::NS_APP . 'id'][0]['value'],
+                "carddata" => $builder->getCard()->serialize(),
+                "lastmodified" => time()
             ];
         }
 
@@ -262,7 +267,34 @@ class ARC extends PDO implements SyncSupport {
      * @param array $uris
      * @return array
      */
+    /*
     public function getMultipleCards ($addressbookId, array $uris) {
+
+        $result = [];
+        $store = $this->getStoreForAddressBook($addressbookId);
+        $controller = new StoreController($store);
+
+        $rs = $controller->getCards($uris);
+
+        foreach ($rs["result"] as $uri => $data) {
+
+            $builder = new VCardBuilder();
+            $builder->readFromRDF($data);
+
+            $uri = 'ERROR';
+            if (array_key_exists(Constants::NS_APP . 'id', $data)) {
+
+                $uri = $data[Constants::NS_APP . 'id'][0]['value'];
+            }
+
+            // id, uri, lastmodified, etag, size, carddata
+            $result[] = [
+                'uri' => $uri,
+                'carddata' => $builder->getCard()->serialize()
+            ];
+        }
+
+        return $result;
 
         $query = 'SELECT id, uri, lastmodified, etag, size, carddata FROM ' . $this->cardsTableName . ' WHERE addressbookid = ? AND uri IN (';
         // Inserting a whole bunch of question marks
@@ -280,6 +312,7 @@ class ARC extends PDO implements SyncSupport {
         return $result;
 
     }
+    */
 
     /**
      * Creates a new card.

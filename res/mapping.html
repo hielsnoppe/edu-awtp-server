@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://purl.org/NET/erdf/profile">
+
+    <base href="http://www.w3.org/2006/vcard/ns#" />
+    <title>Table of VCard Ontology to FOAF, PIM, and other mappings</title>
+    <meta name="dc.creator" content="Harry Halpin" />
+
+    <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />
+    <link rel="schema.foaf" href="http://xmlns.com/foaf/0.1/" />
+    <link rel="schema.con" href="http://www.w3.org/2000/10/swap/pim/contact#" />    <link rel="schema.rdfs" href="http://www.w3.org/2000/01/rdf-schema#" />
+    <link rel="schema.owl" href="http://www.w3.org/2002/07/owl#" />
+    <link rel="schema.v" href="http://www.w3.org/2006/vcard/ns#" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body>
+    <header class="container-fluid">
+
+        <h1>Table of VCard Ontology to FOAF, PIM, and other mappings</h1>
+        <h2></h2>
+
+        <dl class="dl-horizontal">
+            <dt>This version:</dt>
+            <dd>Unpublished</dd>
+            <dt>Latest version:</dt>
+            <dd>Unpublished</dd>
+            <dt>Previous version:</dt>
+            <dd><a href="http://www.ibiblio.org/hhalpin/homepage/notes/vcardtable.html">Table of VCard Ontology to FOAF, PIM, and other mappings</a></dd>
+            <dt>Authors</dt>
+            <dd>Harry Halpin</dd>
+            <dd><a href="http://www.nielshoppe.de">Niels Hoppe</a></dd>
+        </dl>
+
+        <!--
+        <ul>
+            <li>https://norman.walsh.name/2005/12/12/vcard</li>
+            <li>https://www.w3.org/2006/vcard/ns-2006.html</li>
+            <li>https://www.w3.org/Submission/vcard-rdf/</li>
+        </ul>
+        -->
+    </header>
+
+    <main class="container-fluid">
+        
+        <p>This table attempts to explain the mappings between the new <a href="http://www.w3.org/2006/vcard/ns">VCard ontology</a> and two other vocabulariees commonly used to describe people, the W3C's <a href="http://www.w3.org/2000/10/swap/pim/contact">PIM vocabulary</a> and the community-driven <a href="http://www.foaf-project.org/">FOAF</a> vocabulary. However, neither of these vocabularies is isomorphic to the <a href="http://www.ietf.org/rfc/rfc2426.txt">VCard</a> (and thus <a href="http://microformats.org/wiki/hcard">hCard</a>) and as such a new vocabulary had to be created.</p>
+
+        <p>Note that this table contains the RDF and OWL statements needed to formalize these relationships in <a href="http://research.talis.com/2005/erdf/wiki/Main/RdfInHtml">Embedded RDF</a> so that a formal description of these mappings can be easily extracted via a <a href="http://www.w3.org/TR/grddl-primer/">GRDDL</a> transformation.</p>
+
+        <table class="table table-bordered table-striped table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th><a href="http://www.w3.org/2006/vcard/ns#">VCard</a></th>
+                    <th><a href="http://www.w3.org/2006/vcard/ns">VCard Ontology</a></th>
+                    <th><a href="http://xmlns.com/foaf/0.1/">FOAF</a></th>
+                    <th><a href="http://www.w3.org/2000/10/swap/pim/contact#">W3C PIM</a></th>
+                    <th>Other Vocabularies or Notes</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr id="v.VCard">
+                    <td>vCard</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#VCard">v:VCard</a></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="v.Location">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#Location">v:Location</a></td>
+                    <td></td>
+                    <td><a rel="owl.sameAs" href="http://www.w3.org/2000/10/swap/pim/contact#Location">con:Location</a></td>
+                </tr>
+                <tr id="v.Address">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#Address">v:Address</a></td>
+                    <td></td>
+                    <td><div id="v.Address"><a rel="owl.sameAs" href="http://www.w3.org/2000/10/swap/pim/contact#Address">con:Address</a></div></td>
+                </tr>
+                <tr id="v.agent">
+                    <td><i>@@TODO: Where is this in VCard spec?</i></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#agent">v:agent</a></td>
+                    <td>foaf:Agent<i>(@@TODO: This is a class, not a property, can't be sameAs or subclassOf unless we use OWL FULL!)</i></td>
+                    <td></td>
+                </tr>
+                <tr id="v.fn">
+                    <td>fn</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#fn">v:fn</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/fullName">foaf:fullName</a></td>
+                    <td><i>@@TODO: It seems this should have some relationship to W3C Contact, but can only think of con:knownAs</i></td>
+                </tr>
+                <tr id="v.n">
+                    <td>n</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#n">v:n</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/name">foaf:name</a></td>
+                    <td></td>
+                    <td><i>@@TODO: Not sure if this mapping should include this as a superclass of all other naming conventions</i></td>
+                </tr>
+                <tr id="v.family-name">
+                    <td>family-name</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#family-name">v:family-name</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/family_name">foaf:family_name</a>,<a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/surname">foaf:surname</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#lastName">con:lastName</a></td>
+                </tr>
+                <tr id="v.given-name">
+                    <td>given-name</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#given-name">v:given-name</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/givenname">foaf:givenname</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#firstName">con:firstName</a></td>
+                </tr>
+                <tr id="v.additional-name">
+                    <td>additional-name</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#additional-name">v:additional-name</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/name">foaf:name</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#knownAs">con:knownAs</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.honorific-prefix">
+                    <td>honorific-prefix</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#honorific-prefix">v:honorific-prefix</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/title">foaf:title</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#personalTitle">con:personalTitle</a></td>
+                    <td><i>Note that prefixes are subproperties of titles, since every title cannot be a prefix but every prefix is a title</i></td>
+                </tr>
+                <tr id="v.honorific-suffix">
+                    <td>honorific-suffix</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#honorific-suffix">v:honorific-suffix</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#personalSuffix">con:personalSuffix</a></td>
+                </tr>
+                <tr id="v.nickname">
+                    <td>nickname</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#nickname">v:nickname</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/nick">foaf:nick</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#knownAs">con:knownAs</a></td>
+                </tr>
+                <tr id="v.url">
+                    <td>url</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#url">v:url</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/homePage">foaf:homePage</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#homepage">con:homepage</a> <i>@@TODO: Or should this be con:publicHomepage?</i></td>
+                </tr>
+                <tr  id="v.email">
+                    <td>email</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#email">v:email</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#emailAddress">con:emailAddress</a></td>
+                </tr>
+                <tr id="v.mobileEmail">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#mobileEmail">v:mobileEmail</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#emailAddress">con:emailAddress</a></td>
+                </tr>
+                <tr id="v.workEmail">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#workEmail">v:workEmail</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#emailAddress">con:emailAddress</a></td>
+                </tr>
+                <tr id="v.unlabelledEmail">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#unlabelledEmail">v:unlabelledEmail</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#emailAddress">con:emailAddress</a></td>
+                </tr>
+                <tr id="v.fax">
+                    <td>fax</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#fax">v:fax</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/mbox">foaf:mbox</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#fax">con:fax</a></td>
+                </tr>
+                <tr id="v.tel">
+                    <td>tel</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#tel">v:tel</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#phone">con:phone</a></td>
+                </tr>
+                <tr id="v.homeTel">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#homeTel">v:homeTel</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#phone">con:phone</a></td>
+                </tr>
+                <tr>
+                    <td id="v.mobileTel"></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#mobileTel">v:mobileTel</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#mobile">con:mobile</a><i>@@TODO: Why is the range restricted to ContactLocation, when con:phone is not? Needs fixing.</i></td>
+                </tr>
+                <tr id="v.workTel">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#workTel">v:workTel</a></td>
+                    <td><a rel="rdfs.subClassOf" href="http://xmlns.com/foaf/0.1/phone">foaf:phone</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#phone">con:phone</a></td>
+                </tr>
+                <tr id="v.unlabelledTel">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#unlabelledTel">v:unlabelledTel</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="#phone">foaf:phone</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#phone">con:phone</a></td>
+                </tr>
+                <tr id="v.adr">
+                    <td>adr</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#adr">v:adr</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#address">con:address</a></td>
+                </tr>
+                <tr id="v.homeAdr">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#homeAdr">v:homeAdr</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#address">con:address</a></td>
+                </tr>
+                <tr id="v.workAdr">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#workAdr">v:workAdr</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#address">con:address</a></td>
+                </tr>
+                <tr id="v.unlabelledAdr">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#unlabelledAdr">v:unlabelledAdr</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#address">con:address</a></td>
+                </tr>
+                <tr id="v.post-office-box">
+                    <td>post-office-box</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#post-office-box">v:post-office-box</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#_addressProperty">con:_addressProperty</a></td>
+                </tr>
+                <tr id="v.extended-address">
+                    <td>extended-address</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#extended-address">v:extended-address</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#_addressProperty">con:_addressProperty</a></td>
+                </tr>
+                <tr id="v.street-address">
+                    <td></td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#street-address">v:street-address</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#street">con:street</a></td>
+                </tr>
+                <tr id="v.locality">
+                    <td>locality</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#locality">v:locality</a></td>
+                    <td></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#city">con:city</a></td>
+                </tr>
+                <tr id="v.region">
+                    <td>region</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#region">v:region</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#_addressProperty">con:_addressProperty</a></td>
+                </tr>
+                <tr>
+                    <td>postal-code</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#postalcode">v:postal-code</a></td>
+                    <td></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://www.w3.org/2000/10/swap/pim/contact#_addressProperty">con:_addressProperty</a></td>
+                </tr>
+                <tr id="v.country-name">
+                    <td>country-name</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#country-name">v:country-name</a></td>
+                    <td></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#country">con:country</a></td>
+                </tr>
+                <tr id="v.label">
+                    <td>label</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#label">v:label</a></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="v.geo">
+                    <td>geo</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#geo">v:geo</a></td>
+                    <td></td>
+                    <td><i>@@TODO: Very close to con:ContactLocation, but is a property, not a class</i></td>
+                </tr>
+                <tr id="v.latitude">
+                    <td>latitude</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#latitude">v:latitude</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2003/01/geo/wgs84_pos#lat">geo:lat</a><i>@@TODO: (Not standardized yet..is this a problem?)</i></td>
+                </tr>
+                <tr id="v.longitude">
+                    <td>longitude</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#longitude">v:longitude</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2003/01/geo/wgs84_pos#long">geo:long</a><i>@@TODO: (Not standardized yet..is this a problem?)</i></td>
+                </tr>
+                <tr id="v.tz">
+                    <td>tz</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#tz">v:tz</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><i>@@TODO: Would be nice to map to RDFCalendar, but RDFCalendar seems to use datatypes to model timezones...unclear how mapping would work</i></td>
+                </tr>
+                <tr id="v.photo">
+                    <td>photo</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#photo">v:photo</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/img">foaf:img</a></td>
+                </tr>
+                <tr id="v.logo">
+                    <td>logo</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#logo">v:logo</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/logo">foaf:logo</a></td>
+                </tr>
+                <tr id="v.sound">
+                    <td>sound</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#sound">v:sound</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.bday">
+                    <td>bday</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#bday">v:bday</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/phone">foaf:birthday</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#birthday">con:birthday</a></td>
+                </tr>
+                <tr id="v.title">
+                    <td>title</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#title">v:title</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/title">foaf:title</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://www.w3.org/2000/10/swap/pim/contact#personalTitle">con:personalTitle</a></td>
+                </tr>
+                <tr id="v.role">
+                    <td>role</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#role">v:role</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.org">
+                    <td>org</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#Organization">v:Organization</a></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/foaf/0.1/Organization">foaf:Organization</a></td>
+                    <td><a rel="rdfs:subClassOf" href="http://www.w3.org/2000/10/swap/pim/contact#SocialEntity">con:SocialEntity</a><i>@@TODO: There is a con:organization but that's a property, not a class</i></td>
+                </tr>
+                <tr id="v.organization-name">
+                    <td>organization-name</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#organization-name">v:organization-name</a></td>
+                    <td><a rel="rdfs.subPropertyOf" href="http://xmlns.com/foaf/0.1/name">foaf:name</a></td>
+                    <td><a rel="owl:sameAs" href="http://www.w3.org/2000/10/swap/pim/contact#departmentName">con:departmentName</a></td>
+                </tr>
+                <tr id="v.organization-unit">
+                    <td>organization-unit</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#organization-unit">v:organization-unit</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.category">
+                    <td>category</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#category">v:category</a></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr id="v.note">
+                    <td>note</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#note">v:note</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><a rel="rdfs:subClassOf" href="http://www.w3.org/2000/01/rdf-schema#comment">rdfs:comment</a></td>
+                </tr>
+                <tr id="v.class">
+                    <td>class</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#class">v:class</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><i>@@TODO: Is there no access-right (Public, private, etc.) vocab for RDF?</i></td>
+                </tr>
+                <tr id="v.key">
+                    <td>key</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#key">v:key</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><a rel="owl.equivalentProperty" href="http://xmlns.com/wot/0.1/pubkeyAddress">wot:pubkeyAddress</a><i>@@TODO: Using the non-standard <a href="http://xmlns.com/wot/0.1/">Web of Trust</a> vocab, not sure if this is right...</i></td>
+                </tr>
+                <tr id="v.mailer">
+                    <td>mailer</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#mailer">v:mailer</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.uid">
+                    <td>uid</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#uid">v:uid</a></td>
+                    <td></td>
+                </tr>
+                <tr id="v.rev">
+                    <td>rev</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#rev">v:rev</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><i>@@TODO: It seems a revision ontology must exist somewhere...</i></td>
+                </tr>
+                <tr id="v.role">
+                    <td>role</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#role">v:role</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><i>@@TODO: Do we have any ontologies of roles?</i></td>
+                </tr>
+                <tr id="v.sort-string">
+                    <td>sort-string</td>
+                    <td><a href="http://www.w3.org/2006/vcard/ns#sort-string">v:sort-string</a></td>
+                    <td></td>
+                    <td></td>
+                    <td><i>@@TODO: Related. but not in a clear way, to con:sortName</i></td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <aside class="container-fluid">
+        <p>@@TODO: Why not make mobile, home, etc. (types in VCard) classes instead of properties, so you just have one class called <code>phone</code> so that everything object of a <code>v:tel</code> relationship is a "phone", and then to distinguish between <code>phones</code> by virtue of sub-classing them for <code>mobile</code>, <code>home</code>, etc? Is it the fact that this data might be lost in RDF graph merging? Yet if the properties have the right domain and ranges, they should not.</p>
+        <p>@@TODO: Why the unlabelled prefix for some properties?</p>
+        <p>@@TODO: Someone more familiar with PIM should check how I used the address property and the  W3C PIM _addressProperty.</p>
+        <p>@@TODO: In W3C PIM we map from People  to their Contactlocations which in turn have addresses, phone numbers, etc. and in vCard addresses are mapped to types (like "home"), which seem like they should be sub-classes of ContactLocations.</p>
+        <p>@@TODO: It should be noted in the text that the VCard Ontology carries the same exceptions as hCard, i.e. not encoding: NAME, PROFILE, SOURCE, PRODID, VERSION </p>
+    </aside>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>

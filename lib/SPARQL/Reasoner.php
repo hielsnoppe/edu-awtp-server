@@ -95,7 +95,7 @@ class Reasoner {
                 $object = $row['o'];
 
                 switch ($row['o type']) {
-                    
+
                 case 'uri':
                     $object = '<' . $object . '>';
                     break;
@@ -128,7 +128,7 @@ SELECT DISTINCT ?s WHERE {
     OPTIONAL { ?s a ?type }
 SPARQL;
 
-        $query .= "\n" . 'FILTER (!bound(?type))' . "\n";
+        #$query .= "\n" . 'FILTER (!bound(?type))' . "\n";
 
         $query .= 'FILTER (';
         $query .= implode(' || ', array_map(function ($property) {

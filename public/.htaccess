@@ -1,5 +1,14 @@
 RewriteEngine On
-# This makes every request go to server.php
+RewriteBase /
+
+# Service discovery
+# See http://sabre.io/dav/service-discovery/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.well-known/carddav$ / [R,L]
+#RewriteRule ^.well-known/caldav$ / [R,L]
+
+# This makes every request go to index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^.*$ /index.php [L]

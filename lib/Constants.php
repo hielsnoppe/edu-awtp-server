@@ -12,7 +12,8 @@ class Constants {
     const NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
     const NS_OWL = "http://www.w3.org/2002/07/owl#";
 
-    const NS_VCARD = "http://www.w3.org/2001/vcard-rdf/3.0#";
+    #const NS_VCARD = "http://www.w3.org/2001/vcard-rdf/3.0#";
+    const NS_VCARD = "http://www.w3.org/2006/vcard/ns#";
     const NS_VCAL = "http://www.w3.org/2002/12/cal#";
     const NS_FOAF = "http://xmlns.com/foaf/0.1/";
     const NS_BIO = "http://purl.org/vocab/bio/0.1/";
@@ -55,6 +56,14 @@ class Constants {
             ],
             'owl:equivalentClass' => [
                 'hcard:Vcard'
+            ],
+            'rdfs:domain' => [
+                'vcard:given-name',
+                'vcard:family-name',
+                'vcard:honorific-prefix',
+                'vcard:honorific-suffix',
+                'vcard:hasTelephone',
+                'vcard:hasEmail'
             ]
         ],
         'vcard:Individual' => [
@@ -85,6 +94,11 @@ class Constants {
                 // Status: archaic
                 'foaf:family_name', 'foaf:geekcode', 'foaf:givenname',
                 'foaf:surname'
+            ]
+        ],
+        'hcard:Vcard' => [
+            'rdfs:domain' => [
+                'hcard:photo'
             ]
         ]
     ];
@@ -118,6 +132,14 @@ class Constants {
             // hCard 1.0
             'hcard:nickname'
         ],
+        'vcard:hasPhoto' => [
+            // Status: testing
+            'foaf:img',
+            // hCard 1.0
+            'hcard:photo',
+            // vCard mapped property
+            'vcard:photo'
+        ],
         'vcard:hasURL' => [
             // Status: stable
             'foaf:homepage',
@@ -128,13 +150,17 @@ class Constants {
             // Status: testing
             'foaf:phone',
             // hCard 1.0
-            'hcard:tel'
+            'hcard:tel',
+            // vCard mapped property
+            'vcard:phone'
         ],
         'vcard:hasEmail' => [
             // Status: stable
             'foaf:mbox',
             // hCard 1.0
-            'hcard:email'
+            'hcard:email',
+            // vCard mapped property
+            'vcard:email'
         ]
     ];
 
@@ -146,7 +172,7 @@ class Constants {
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
-PREFIX vcard: <http://www.w3.org/2001/vcard-rdf/3.0#>
+PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
 PREFIX vcal: <http://www.w3.org/2002/12/cal#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX bio: <http://purl.org/vocab/bio/0.1/>
@@ -201,7 +227,7 @@ SPARQL;
 SELECT ?subject ?type WHERE {
     ?subject a ?type
     OPTIONAL { ?subject app:id ?id }
-    FILTER (?type = foaf:Person || ?type = vcard:Individual || ?type = bio:Birth)
+    FILTER (?type = foaf:Person || ?type = vcard:VCard || ?type = bio:Birth)
     FILTER (!bound(?id))
 }
 SPARQL;
@@ -219,6 +245,8 @@ CONSTRUCT {
     vcard:family-name ?foaf_family ;
     vcard:family-name ?foaf_family2 ;
     vcard:family-name ?vcard_family ;
+    vcard:honorific-prefix ?vcard_honorific_prefix ;
+    vcard:honorific-suffix ?vcard_honorific_suffix ;
     vcard:nickname ?foaf_nick ;
     vcard:nickname ?vcard_nick ;
     vcard:hasURL ?foaf_url ;
@@ -245,6 +273,8 @@ WHERE {
     OPTIONAL { ?card vcard:fn ?vcard_fn } .
     OPTIONAL { ?card vcard:given-name ?vcard_given } .
     OPTIONAL { ?card vcard:family-name ?vcard_family } .
+    OPTIONAL { ?card vcard:honorific-prefix ?vcard_honorific_prefix } .
+    OPTIONAL { ?card vcard:honorific-suffix ?vcard_honorific_suffix } .
     OPTIONAL { ?card vcard:nickname ?vcard_nick } .
     OPTIONAL { ?card vcard:hasURL ?vcard_url } .
     OPTIONAL { ?card vcard:hasTelephone ?vcard_tel } .

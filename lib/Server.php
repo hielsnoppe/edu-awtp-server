@@ -56,6 +56,8 @@ class Server {
 
         // CalDAV plugin
         #$this->sabreServer->addPlugin(new CalDAV\Plugin());
+        // CardDAV plugin
+        $this->sabre->addPlugin(new \Sabre\CardDAV\Plugin());
 
         // ACL plugin
         $this->sabre->addPlugin(new \Sabre\DAVACL\Plugin());

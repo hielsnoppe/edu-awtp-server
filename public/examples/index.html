@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+    "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    version="XHTML+RDFa 1.0" xml:lang="en">
+<head>
+    <title>Staff members at Example Inc.</title>
+    <!--
+    <base href="http://example.org/john-d/" />
+    -->
+    <meta property="dc:creator" content="Niels Hoppe" />
+    <link rel="foaf:primaryTopic" href="http://example.com/jdoe/#me" />
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+    <h1>Staff members at Example Inc.</h1>
+
+    <section about="http://example.com/navid/#me" class="row">
+        <div class="col-sm-8">
+            <h2>
+                <span property="vcard:honorific-prefix">Dr.</span>
+                <span property="vcard:given-name">Navid</span>
+                <span property="vcard:family-name">Nixon</span>
+                <small>vCard (RDFa)</small>
+            </h2>
+
+            <address>
+                <strong>
+                    <span property="vcard:honorific-prefix">Dr.</span>
+                    <span property="vcard:given-name">Navid</span>
+                    <span property="vcard:family-name">Nixon</span>
+                </strong>
+                <br/>
+                <span>
+                    <span class="street-address">149 New Montgomery Street, 3rd Floor</span><br/>
+                    <span class="locality">San Francisco</span>,
+                    <abbr class="region" title="California">CA</abbr>
+                    <span class="postal-code">94105</span><br/>
+                    <span class="country-name">USA</span>
+                </span>
+                <br/>
+                Phone: <a href="tel:+555-1234" rel="vcard:phone">+555-1234</a><br/>
+                Email: <a href="mailto:navid@example.com" rel="vcard:email">navid@example.com</a>
+            </address>
+        </div>
+        <div class="col-sm-4">
+            <img rel="vcard:photo" src="navy.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section about="http://example.com/amber/#me" class="row">
+        <div class="col-sm-8">
+            <h2>
+                <span property="foaf:nickname">Amber</span> Adams
+                <small>FOAF (RDFa)</small>
+            </h2>
+
+            <address>
+                <strong>
+                    <span property="foaf:firstName">Amber</span>
+                    <span property="foaf:lastName">Adams</span>
+                </strong>
+                <br/>
+                <span>
+                    <span class="street-address">149 New Montgomery Street, 3rd Floor</span><br/>
+                    <span class="locality">San Francisco</span>,
+                    <abbr class="region" title="California">CA</abbr>
+                    <span class="postal-code">94105</span><br/>
+                    <span class="country-name">USA</span>
+                </span>
+                <br/>
+                Phone: <a href="tel:+555-1234" rel="foaf:phone">+555-1234</a><br/>
+                Email: <a href="mailto:amber@example.com" rel="foaf:mbox">amber@example.com</a>
+            </address>
+        </div>
+
+        <div class="col-sm-4">
+            <img rel="foaf:img" src="amber.png" class="img-thumbnail" style="width:200px" />
+        </div>
+    </section>
+
+    <section class="vcard row">
+        <div class="col-sm-8">
+            <h2>
+                <span>Patrick Pierce</span>
+                <small>hCard microformat</small>
+            </h2>
+
+            <address>
+                <strong class="fn">Patrick Pierce</strong>
+                <br/>
+                <span class="adr">
+                    <span class="street-address">149 New Montgomery Street, 3rd Floor</span><br/>
+                    <span class="locality">San Francisco</span>,
+                    <abbr class="region" title="California">CA</abbr>
+                    <span class="postal-code">94105</span><br/>
+                    <span class="country-name">USA</span>
+                </span><br/>
+
+                Phone: <a href="tel:+555-1234" class="tel">+555-1234</a><br/>
+                Email: <a href="mailto:patrick@example.com" class="email">patrick@example.com</a><br/>
+            </address>
+        </div>
+        <div class="col-sm-4">
+            <img src="patrick.png" class="photo img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <!--
+    <section class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Scarlet Summers</span>
+                <small>TODO</small>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <img src="scarlet.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Rosie Reagan</span>
+                <small>TODO</small>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <img src="rose.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section itemscope itemtype="http://schema.org/Person" class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Charlie Brown</span>
+                <small>Microdata - schema.org</small>
+            </h2>
+
+        	Hello, my name is
+        	<span itemprop="givenName">Charlie</span>,
+        	I am a
+        	<span itemprop="jobTitle">graduate research assistant</span>
+        	at the
+        	<span itemprop="affiliation">University of Dreams</span>.
+        	My friends call me
+        	<span itemprop="additionalName">Johnny</span>.
+        	You can visit my homepage at
+        	<a href="http://www.peanuts.com" itemprop="url">www.peanuts.com</a>.
+        	<section itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+        		I live at
+        		<span itemprop="streetAddress">1234 Peach Drive</span>,
+        		<span itemprop="addressLocality">Warner Robins</span>,
+        		<span itemprop="addressRegion">Georgia</span>.
+        	</section>
+        </div>
+        <div class="col-md-4">
+            <img src="cyan.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Violet</span>
+                <small>TODO</small>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <img src="violet.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Oliver</span>
+                <small>TODO</small>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <img src="oliver.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+
+    <section class="row">
+        <div class="col-md-8">
+            <h2>
+                <span itemprop="name">Cyan Carter</span>
+                <small>TODO</small>
+            </h2>
+        </div>
+        <div class="col-md-4">
+            <img src="cyan.png" class="img-thumbnail" style="width:200px"/>
+        </div>
+    </section>
+    -->
+    </div>
+</body>
+</html>

@@ -19,7 +19,8 @@
 This server is intended to be compatible with all CardDAV clients and tested with the following:
 
 * [cadaver](http://www.webdav.org/cadaver/) (working)
-* Thunderbird - [SOGo Connector](https://sogo.nu/download.html#/frontends) (not working, yet)
-* Thunderbird - [CardBook](https://addons.mozilla.org/en-US/thunderbird/addon/cardbook/) (not working, yet)
-* Thunderbird - [CardDAV Browser](https://addons.mozilla.org/en-US/thunderbird/addon/carddav-browser/) (not working, yet)
+* [pycarddav](http://lostpackets.de/pycarddav/) (working)
+* Thunderbird - [SOGo Connector](https://sogo.nu/download.html#/frontends) (working)
+* Thunderbird - [CardBook](https://addons.mozilla.org/en-US/thunderbird/addon/cardbook/) (not tested, yet)
+* Thunderbird - [CardDAV Browser](https://addons.mozilla.org/en-US/thunderbird/addon/carddav-browser/) (not tested, yet)
 * Android - [DAVdroid](https://davdroid.bitfire.at/) (not tested, yet)

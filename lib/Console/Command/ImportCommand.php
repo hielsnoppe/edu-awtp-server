@@ -29,16 +29,16 @@ class ImportCommand extends AbstractCommand {
         $sources = [
             [
                 'principal' => 'principals/admin',
-                'url' => 'http://localhost/example.html',
+                'url' => 'http://localhost/examples/index.html',
                 'refresh_interval' => 0,
                 'last_accessed' => 0
-            ],
+            ]/*,
             [
                 'principal' => 'principals/admin',
                 'url' => 'file:///var/www/data/addressbook.rdf',
                 'refresh_interval' => 0,
                 'last_accessed' => 0
-            ]
+            ]*/
         ];
 
         $this->log->info('Loading sources...');

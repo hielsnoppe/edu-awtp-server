@@ -192,7 +192,8 @@ class ARC extends PDO implements SyncSupport {
 
             // id, uri, lastmodified, etag, size, carddata
             $result[] = [
-                'uri' => $data[Constants::NS_APP . 'id'][0]['value'],
+                'etag' => md5($uri),
+                'uri' => $data[Constants::NS_APP . 'id'][0]['value'] . '.vcf',
                 'carddata' => $builder->getCard()->serialize(),
                 'lastmodified' => time()
             ];
@@ -215,6 +216,8 @@ class ARC extends PDO implements SyncSupport {
      */
     public function getCard ($addressbookId, $cardUri) {
 
+        $cardUri = substr($cardUri, 0, -4); # FIXME workaround
+
         $result = false;
         $store = $this->getStoreForAddressbook($addressbookId);
         $controller = new StoreController($store);
@@ -233,9 +236,9 @@ class ARC extends PDO implements SyncSupport {
 
             // id, uri, lastmodified, etag, size, carddata
             $result = [
-                "uri" => $data[Constants::NS_APP . 'id'][0]['value'],
-                "carddata" => $builder->getCard()->serialize(),
-                "lastmodified" => time()
+                'uri' => $data[Constants::NS_APP . 'id'][0]['value'] . '.vcf',
+                'carddata' => $builder->getCard()->serialize(),
+                'lastmodified' => time()
             ];
         }
 
